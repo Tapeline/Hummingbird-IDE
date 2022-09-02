@@ -1,0 +1,11 @@
+general--projectFolder: projects
+debugOptions--allowDebug: false
+general--lastOpened: [/home/tapeline/Quail/QuailProjects/Edu, /home/tapeline/JavaProjects/Files/Hummingbird/fff]
+appearance--fontName: Helvetica
+general--runConfigurations:
+- !!me.tapeline.hummingbird.expansions.runcfg.RunConfiguration {command: '', name: ''}
+- !!me.tapeline.hummingbird.expansions.runcfg.RunConfiguration {command: 'xterm -c
+    cd %{projectFolder}%', name: Xterm 2}
+general--pluginFolder: plugins
+appearance--fontSize: 12
+appearance--theme: Darcula
