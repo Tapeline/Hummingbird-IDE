@@ -1,4 +1,6 @@
-package me.tapeline.hummingbird.styling.colorschemes;
+package me.tapeline.hummingbird.expansions.colorschemes;
+
+import me.tapeline.hummingbird.expansions.Orderable;
 
 import java.awt.*;
 

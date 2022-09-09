@@ -2,16 +2,26 @@ package me.tapeline.hummingbird.windows.forms.error;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class ErrorDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
+    private JTextArea error;
 
-    public ErrorDialog() {
+    public ErrorDialog(Exception exception) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        pw.close();
+
+        error.setText(sw.toString());
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -39,6 +49,9 @@ public class ErrorDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        pack();
+        setVisible(true);
     }
 
     private void onOK() {
@@ -52,9 +65,9 @@ public class ErrorDialog extends JDialog {
     }
 
     public static void main(String[] args) {
-        ErrorDialog dialog = new ErrorDialog();
-        dialog.pack();
-        dialog.setVisible(true);
+        ErrorDialog dialog = new ErrorDialog(new Exception(new IllegalArgumentException()));
+
+
         System.exit(0);
     }
 }

@@ -7,15 +7,16 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
 
 public class ItemCreateNewText extends JMenuItem {
 
     public ItemCreateNewText(File parent) {
-        super("New plain");
+        super("New text (.txt)");
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File f = Dialogs.file(getRootPane(), parent);
+                File f = Dialogs.saveFile(getRootPane(), parent, Arrays.asList("txt"));
                 if (f != null) FS.writeFile(f, "");
             }
         });

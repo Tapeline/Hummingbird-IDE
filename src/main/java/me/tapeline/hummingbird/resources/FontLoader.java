@@ -1,26 +1,31 @@
 package me.tapeline.hummingbird.resources;
 
 import me.tapeline.hummingbird.Main;
+import me.tapeline.hummingbird.configuration.Configuration;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 
 public class FontLoader {
 
-    public static Exception loadIcons(String folder) {
+    public static Exception loadFonts(String folder) {
         try {
-            for (Field field : Icons.class.getDeclaredFields()) {
+            for (Field field : Fonts.class.getDeclaredFields()) {
                 if (Modifier.isStatic(field.getModifiers()) &&
-                    field.getType().equals(BufferedImage.class)) {
-                    URL url = Main.class.getClassLoader().getResource(
-                            folder + "/" + field.getName() + ".png"
+                    field.getType().equals(Font.class)) {
+                    InputStream fontStream = Main.class.getResourceAsStream(
+                            "/" + folder + "/" + field.getName() + ".ttf"
                     );
-                    if (url == null) return new Exception(folder + "/" + field.getName() +
-                            ".png: icon not found");
-                    field.set(Icons.class, ImageIO.read(url));
+                    if (fontStream == null) return new Exception(folder + "/" + field.getName() +
+                            ".ttf: font not found");
+                    Font f = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                    f = f.deriveFont(Font.PLAIN, Main.cfg.fontSize);
+                    field.set(Fonts.class, f);
                 }
             }
             return null;

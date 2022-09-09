@@ -1,2 +1,7 @@
-package me.tapeline.hummingbird.ui;public class ComboBoxOptionSelected {
+package me.tapeline.hummingbird.ui;
+
+public abstract class ComboBoxOptionListener {
+
+    public abstract void optionSelected(Object option, String optionId);
+
 }

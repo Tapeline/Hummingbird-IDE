@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ui;
+package me.tapeline.hummingbird.filesystem.project.fsmodel;
 
 import me.tapeline.hummingbird.filesystem.project.fsmodel.Element;
 import me.tapeline.hummingbird.ui.FileTreeNode;

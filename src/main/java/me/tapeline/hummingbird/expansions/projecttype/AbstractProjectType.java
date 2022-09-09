@@ -1,2 +1,7 @@
-package me.tapeline.hummingbird.expansions.projecttype;public class AbstractProjectType {
+package me.tapeline.hummingbird.expansions.projecttype;
+
+public abstract class AbstractProjectType {
+
+    public abstract String typeName();
+
 }

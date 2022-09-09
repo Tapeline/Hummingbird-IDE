@@ -12,12 +12,11 @@ import java.util.Arrays;
 public class ItemDelete extends JMenuItem {
 
     public ItemDelete(File parent) {
-        super("New text (.txt)");
+        super("Delete");
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File f = Dialogs.saveFile(getRootPane(), parent, Arrays.asList("txt"));
-                if (f != null) FS.writeFile(f, "");
+                FS.delete(parent);
             }
         });
     }

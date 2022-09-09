@@ -1,7 +1,7 @@
 package me.tapeline.hummingbird.ui;
 
-import me.tapeline.quailstudio.forms.EditorForm;
-import me.tapeline.quailstudio.utils.Utils;
+import me.tapeline.hummingbird.utils.Utils;
+import me.tapeline.hummingbird.windows.forms.editor.EditorFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class JPathBreadCrumb extends JPanel {
 
         public File f;
 
-        public BreadCrumbButton(EditorForm form, File f) {
+        public BreadCrumbButton(EditorFrame form, File f) {
             super(f.getName());
             this.f = f;
             setBorderPainted(false);
@@ -42,10 +42,10 @@ public class JPathBreadCrumb extends JPanel {
     }
 
     public File path;
-    public EditorForm form;
+    public EditorFrame form;
     public List<JButton> crumbs = new ArrayList<>();
 
-    public JPathBreadCrumb(EditorForm form, File f) {
+    public JPathBreadCrumb(EditorFrame form, File f) {
         super();
         setLayout(new FlowLayout());
         path = f;

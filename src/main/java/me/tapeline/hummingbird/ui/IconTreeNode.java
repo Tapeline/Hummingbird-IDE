@@ -10,7 +10,7 @@ public class IconTreeNode extends DefaultMutableTreeNode {
         setUserObject(new TreeNodeData(icon, text));
     }
 
-    class TreeNodeData {
+    static class TreeNodeData {
 
         Icon icon;
         String text;

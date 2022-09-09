@@ -1,13 +1,10 @@
-package me.tapeline.quailstudio.project;
+package me.tapeline.hummingbird.filesystem.project;
 
-import me.tapeline.quailstudio.Main;
-import me.tapeline.quailstudio.forms.EditorForm;
-import me.tapeline.quailstudio.project.fsmodel.FileSystemModel;
+import me.tapeline.hummingbird.Main;
+import me.tapeline.hummingbird.filesystem.project.fsmodel.FileSystemModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class Project {
 
@@ -18,21 +15,17 @@ public class Project {
         root = f;
         fileSystem = new FileSystemModel(root);
         boolean hasProject = false;
-        for (String path : ((List<String>) Main.cfg.cfg.get("last-projects"))) {
+        for (String path : Main.cfg.lastOpened) {
             if (path.equals(f.getAbsolutePath())) {
                 hasProject = true;
                 break;
             }
         }
-        if (!hasProject) ((List<String>) Main.cfg.cfg.get("last-projects")).add(f.getAbsolutePath());
-        try {
-            Main.cfg.saveConfig();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (!hasProject) Main.cfg.lastOpened.add(f.getAbsolutePath());
+        Main.saveCfg();
     }
 
-    public void saveProject(EditorForm form) throws IOException {
+    public void saveProject() throws IOException {
         fileSystem.root.save();
     }
 

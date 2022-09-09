@@ -10,6 +10,6 @@ public abstract class AbstractSyntaxChecker {
 
     public abstract AbstractFileType getApplicableFileType();
 
-    public abstract List<Highlight> highlight(JTextPane pane);
+    public abstract List<SyntaxTip> check(JTextPane pane);
 
 }

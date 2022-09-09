@@ -1,25 +1,59 @@
 package me.tapeline.hummingbird.expansions.filetype;
 
+import me.tapeline.hummingbird.filesystem.project.Project;
+import me.tapeline.hummingbird.menus.items.ItemCreateNewFolder;
+import me.tapeline.hummingbird.menus.items.ItemCreateNewPlain;
+import me.tapeline.hummingbird.menus.items.ItemCreateNewText;
+import me.tapeline.hummingbird.menus.items.ItemDelete;
 import me.tapeline.hummingbird.resources.Icons;
 import me.tapeline.hummingbird.utils.Utils;
 
-import java.awt.image.BufferedImage;
+import javax.swing.*;
 import java.io.File;
 
-public class GeneralFile extends AbstractFileType {
+public class GeneralFolder extends AbstractFileType {
 
-    public GeneralFile() {
-        icon = Icons.file;
+    public GeneralFolder() {
+        icon = Icons.folder;
     }
 
     @Override
     public boolean appliesToFile(File file) {
-        if (extensions.size() == 0) return true;
-        String ext = Utils.getExtension(file);
-        for (String e : extensions)
-            if (e.equals(ext))
-                return true;
+        return file.isDirectory();
+    }
+
+    @Override
+    public void setupContextActions(JMenu menu, File contextFile, Project contextProject) {
+        JMenu menuNew = new JMenu("New...");
+        menuNew.add(new ItemCreateNewPlain(contextFile));
+        menuNew.add(new ItemCreateNewText(contextFile));
+        menuNew.add(new ItemCreateNewFolder(contextFile));
+        menu.add(menuNew);
+        menu.add(new ItemDelete(contextFile));
+    }
+
+    @Override
+    public void setupContextActions(JPopupMenu menu, File contextFile, Project contextProject) {
+        JMenu menuNew = new JMenu("New...");
+        menuNew.add(new ItemCreateNewPlain(contextFile));
+        menuNew.add(new ItemCreateNewText(contextFile));
+        menuNew.add(new ItemCreateNewFolder(contextFile));
+        menu.add(menuNew);
+        menu.add(new ItemDelete(contextFile));
+    }
+
+    public boolean canOpen(File file) {
         return false;
     }
 
+    @Override
+    public String id() {
+        return "folder";
+    }
+
+
+    @Override
+    public int weight() {
+        return Integer.MAX_VALUE;
+    }
 }

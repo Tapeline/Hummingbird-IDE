@@ -1,7 +1,6 @@
-package me.tapeline.quailstudio.customui;
+package me.tapeline.hummingbird.ui;
 
-import me.tapeline.quailstudio.project.CodeEditor;
-import me.tapeline.quailstudio.utils.Icons;
+import me.tapeline.hummingbird.resources.Icons;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,7 +77,7 @@ public class JClosableTabbedPane extends JTabbedPane {
             if (e.getSource() instanceof JButton) {
                 JButton clickedButton = (JButton) e.getSource();
                 JTabbedPane tabbedPane = (JTabbedPane) clickedButton.getParent().getParent().getParent();
-                if (tab instanceof CodeEditor) ((CodeEditor) tab).save();
+                //if (tab instanceof CodeEditor) ((CodeEditor) tab).save();
                 tabbedPane.remove(tab);
             }
         }

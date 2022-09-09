@@ -1,20 +1,25 @@
 package me.tapeline.hummingbird.ui;
 
+import me.tapeline.hummingbird.expansions.Registry;
+
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class JConsole {
-    private final JTextArea console;
+public class JConsole extends JTextPane {
+    private final JTextPane console = this;
     public Process boundProcess;
     public Scanner inputReader;
     public Scanner errorReader;
     public PrintWriter writer;
     public int lastPutOut = 0;
-    public JConsole(JTextArea area) {
-        console = area;
+    public JConsole() {
         console.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e){
@@ -45,10 +50,17 @@ public class JConsole {
                 errorReader = new Scanner(process.getErrorStream());
                 writer = new PrintWriter(process.getOutputStream());
                 inputReader.useDelimiter("");
+                StyledDocument document = getStyledDocument();
                 new Thread(()->{
                     while (boundProcess.isAlive()) {
                         while (errorReader.hasNextLine()) {
-                            console.append(errorReader.nextLine() + "\n");
+                            try {
+                                document.insertString(
+                                        document.getLength(),
+                                        errorReader.nextLine() + "\n",
+                                        Registry.currentTheme.scheme().error.attributeSet()
+                                );
+                            } catch (BadLocationException ignore) { }
                             console.setCaretPosition(console.getText().length());
                             lastPutOut = console.getCaretPosition();
                         }
@@ -56,7 +68,13 @@ public class JConsole {
                 }).start();
                 while (boundProcess.isAlive()) {
                     while (inputReader.hasNext()) {
-                        console.append(inputReader.next());
+                        try {
+                            document.insertString(
+                                    document.getLength(),
+                                    inputReader.nextLine(),
+                                    Registry.currentTheme.scheme().error.attributeSet()
+                            );
+                        } catch (BadLocationException ignore) { }
                         console.setCaretPosition(console.getText().length());
                         lastPutOut = console.getCaretPosition();
                     }

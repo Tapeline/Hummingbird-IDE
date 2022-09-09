@@ -1,5 +1,6 @@
 package me.tapeline.hummingbird.filesystem.project.fsmodel;
 
+import me.tapeline.hummingbird.ui.FileTreeNode;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

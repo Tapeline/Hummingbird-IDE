@@ -1,8 +1,12 @@
-package me.tapeline.hummingbird.windows.dialog.wizards.directorychooser;
+package me.tapeline.hummingbird.windows.dialog.wizards.common;
+
+import me.tapeline.hummingbird.utils.Utils;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.util.List;
 
 public class Dialogs {
 
@@ -20,10 +24,76 @@ public class Dialogs {
 
     public static File file(Component form, File parent) {
         JFileChooser fileChooser = new JFileChooser(parent);
-        fileChooser.setDialogTitle("Choose dile...");
+        fileChooser.setDialogTitle("Choose file...");
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int result = fileChooser.showOpenDialog(form);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public static File saveFile(Component form, File parent) {
+        JFileChooser fileChooser = new JFileChooser(parent);
+        fileChooser.setDialogTitle("Choose file...");
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fileChooser.showSaveDialog(form);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public static File file(Component form, File parent, List<String> ext) {
+        JFileChooser fileChooser = new JFileChooser(parent);
+        fileChooser.setDialogTitle("Choose file...");
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileFilter fileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                for (String s : ext)
+                    if (Utils.getExtension(f).equals(s))
+                        return true;
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return "One of " + ext.toString();
+            }
+        };
+        fileChooser.setFileFilter(fileFilter);
+        int result = fileChooser.showOpenDialog(form);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public static File saveFile(Component form, File parent, List<String> ext) {
+        JFileChooser fileChooser = new JFileChooser(parent);
+        fileChooser.setDialogTitle("Choose file...");
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileFilter fileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                for (String s : ext)
+                    if (Utils.getExtension(f).equals(s))
+                        return true;
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return "One of " + ext.toString();
+            }
+        };
+        fileChooser.setFileFilter(fileFilter);
+        int result = fileChooser.showSaveDialog(form);
         if (result == JFileChooser.APPROVE_OPTION) {
             return fileChooser.getSelectedFile();
         }
@@ -73,6 +143,10 @@ public class Dialogs {
                 title,
                 JOptionPane.YES_NO_CANCEL_OPTION
         );
+    }
+
+    public static String string(Component form, String message) {
+        return JOptionPane.showInputDialog(form, message);
     }
 
 }

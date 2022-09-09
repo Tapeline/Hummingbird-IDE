@@ -1,4 +1,4 @@
-package me.tapeline.quailstudio.customui;
+package me.tapeline.hummingbird.ui;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
