@@ -100,4 +100,33 @@ public class CSlotPanel extends JPanel {
         display.setVisible(isHidden);
     }
 
+    public CActionBar getTabBar() {
+        return tabBar;
+    }
+
+    @Override
+    public CardLayout getLayout() {
+        return layout;
+    }
+
+    public List<JPanel> getTabs() {
+        return tabs;
+    }
+
+    public List<String> getTabNames() {
+        return tabNames;
+    }
+
+    public List<JToggleButton> getTabButtons() {
+        return tabButtons;
+    }
+
+    public JPanel getDisplay() {
+        return display;
+    }
+
+    public String getTabPlacement() {
+        return tabPlacement;
+    }
+
 }

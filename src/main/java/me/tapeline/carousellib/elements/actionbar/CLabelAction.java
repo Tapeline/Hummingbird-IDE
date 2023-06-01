@@ -1,6 +1,7 @@
 package me.tapeline.carousellib.elements.actionbar;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CLabelAction extends CAbstractAction {
 
@@ -29,7 +30,7 @@ public class CLabelAction extends CAbstractAction {
     }
 
     @Override
-    public JComponent buildComponent() {
+    public Component buildComponent() {
         JLabel label = new JLabel();
         if (text != null)
             label.setText(text);

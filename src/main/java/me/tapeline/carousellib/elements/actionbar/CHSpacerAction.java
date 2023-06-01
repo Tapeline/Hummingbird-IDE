@@ -3,11 +3,11 @@ package me.tapeline.carousellib.elements.actionbar;
 import javax.swing.*;
 import java.awt.*;
 
-public class CSeparatorAction extends CAbstractAction {
+public class CHSpacerAction extends CAbstractAction {
 
     @Override
     public Component buildComponent() {
-        return new JToolBar.Separator();
+        return Box.createHorizontalGlue();
     }
 
 }

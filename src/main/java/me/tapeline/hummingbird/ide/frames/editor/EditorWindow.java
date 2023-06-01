@@ -12,12 +12,16 @@ import me.tapeline.hummingbird.ide.FS;
 import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
+import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
+import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.filetree.FileTreeNode;
 import me.tapeline.hummingbird.ide.ui.filetree.HFileTree;
 import me.tapeline.hummingbird.ide.ui.studiopanel.StudioPanel;
 import me.tapeline.hummingbird.ide.ui.tabs.AbstractWorkspaceTab;
 import me.tapeline.hummingbird.ide.ui.tabs.DefaultCodeEditorTab;
+import me.tapeline.hummingbird.ide.ui.tooltabs.AbstractToolTab;
+import me.tapeline.hummingbird.ide.ui.tooltabs.HideTabButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +30,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class EditorWindow extends AppWindow {
 
@@ -42,8 +48,13 @@ public class EditorWindow extends AppWindow {
     private StudioPanel studioPanel;
     private CCrumbDisplay pathCrumbs;
     private CClosableTabbedPane workspaceTabs;
-    private HFileTree fileTree;
-    private JScrollPane treeScroll;
+
+    private ProjectToolTab projectToolTab;
+    private TodoToolTab todoToolTab;
+
+    private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
+    private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
+    private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
 
     public EditorWindow(Project project) throws ProjectDirectoryException {
         //super("Hummingbird - " + project.getRoot().getName());
@@ -51,27 +62,17 @@ public class EditorWindow extends AppWindow {
 
         setupUI();
 
-        fileTree.setProject(new Project(new File("src/test/resources/testProj")));
-
-        studioPanel.getBottomTabs().addTab(
-                new CWarningIcon(16, 16),
-                "Problems",
-                new CSimpleTab(new JLabel("No problems"))
-        );
-
-        leftStatus.setText("Ready");
-        rightStatus.setText("|/ master");
-
-        studioPanel.getLeftTabs().addTab(new CPackageIcon(12), "Project", new CSimpleTab(
-                treeScroll
-        ));
-        studioPanel.getLeftTabs().addTab(new CMenuIcon(12), "Tasks", new CSimpleTab(
-                new JLabel("No tasks")
-        ));
+        projectToolTab.getFileTree().setProject(
+                new Project(new File("src/test/resources/testProj")));
+        addLeftToolTab(projectToolTab);
+        addBottomToolTab(todoToolTab);
 
         studioPanel.getRightTabs().addTab(new CDownIcon(12), "Logs", new CSimpleTab(
                 new JLabel("No logs")
         ));
+
+        leftStatus.setText("Ready");
+        rightStatus.setText("|/ master");
 
         pathCrumbs.addCrumb("Test");
         pathCrumbs.addCrumb("Test");
@@ -106,18 +107,8 @@ public class EditorWindow extends AppWindow {
                 tab.save();
         });
 
-        fileTree = new HFileTree(this);
-        treeScroll = new JScrollPane(fileTree);
-        fileTree.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                int selRow = fileTree.getRowForLocation(e.getX(), e.getY());
-                TreePath selPath = fileTree.getPathForLocation(e.getX(), e.getY());
-                if (selRow != -1 && e.getClickCount() == 2) {
-                    if (selPath.getLastPathComponent() instanceof FileTreeNode fileTreeNode)
-                        openFile(fileTreeNode.getFile());
-                }
-            }
-        });
+        projectToolTab = new ProjectToolTab(this);
+        todoToolTab = new TodoToolTab(this);
     }
 
     public void openFile(File file) {
@@ -140,8 +131,33 @@ public class EditorWindow extends AppWindow {
         workspaceTabs.addTab(name, icon, tab);
     }
 
+    public void addBottomToolTab(AbstractToolTab toolTab) {
+        bottomToolTabs.add(toolTab);
+        JComponent tabComponent = toolTab.buildToolTab(this,
+                new HideTabButton(this, HideTabButton.BOTTOM));
+        studioPanel.getBottomTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+    }
+
+    public void addLeftToolTab(AbstractToolTab toolTab) {
+        leftToolTabs.add(toolTab);
+        JComponent tabComponent = toolTab.buildToolTab(this,
+                new HideTabButton(this, HideTabButton.LEFT));
+        studioPanel.getLeftTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+    }
+
+    public void addRightToolTab(AbstractToolTab toolTab) {
+        rightToolTabs.add(toolTab);
+        JComponent tabComponent = toolTab.buildToolTab(this,
+                new HideTabButton(this, HideTabButton.RIGHT));
+        studioPanel.getRightTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+    }
+
     public HFileTree getFileTree() {
-        return fileTree;
+        return projectToolTab.getFileTree();
+    }
+
+    public StudioPanel getStudioPanel() {
+        return studioPanel;
     }
 
 }

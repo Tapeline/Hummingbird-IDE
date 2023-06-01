@@ -1,6 +1,7 @@
 package me.tapeline.carousellib.elements.actionbar;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CComboAction extends CAbstractAction {
 
@@ -15,7 +16,7 @@ public class CComboAction extends CAbstractAction {
     }
 
     @Override
-    public JComponent buildComponent() {
+    public Component buildComponent() {
         return comboBox;
     }
 

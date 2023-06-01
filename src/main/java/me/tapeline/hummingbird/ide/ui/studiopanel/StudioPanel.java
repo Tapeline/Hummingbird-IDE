@@ -4,6 +4,7 @@ import me.tapeline.hummingbird.ide.ui.slotpanel.HSlotPanel;
 import me.tapeline.hummingbird.ide.ui.tools.JSplitTools;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class StudioPanel extends JPanel {
@@ -27,6 +28,10 @@ public class StudioPanel extends JPanel {
         leftTabs = new HSlotPanel(BorderLayout.LINE_START);
         rightTabs = new HSlotPanel(BorderLayout.LINE_END);
         dividerPositions = new WorkspaceDividerPositions();
+
+        centerRightSplitter.setResizeWeight(1);
+
+        leftTabs.getTabBar().setBorder(new EmptyBorder(0, 0, 0, 4));
 
         add(leftTabs, BorderLayout.LINE_START);
         add(rightTabs, BorderLayout.LINE_END);

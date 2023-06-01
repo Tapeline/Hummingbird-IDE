@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 public class CActionBar extends JToolBar {
 
     private List<CAbstractAction> actions = new ArrayList<>();
-    private HashMap<CAbstractAction, JComponent> components = new HashMap<>();
+    private HashMap<CAbstractAction, Component> components = new HashMap<>();
 
     public CActionBar(int axis) {
         super();
@@ -62,17 +62,18 @@ public class CActionBar extends JToolBar {
         return actions.size();
     }
 
-    public JComponent getComponentForAction(CAbstractAction action) {
+    public Component getComponentForAction(CAbstractAction action) {
         if (!components.containsKey(action))
             return null;
         return components.get(action);
     }
 
     public void rebuildActionComponents() {
-        for (JComponent component : components.values())
+        for (Component component : components.values())
             remove(component);
         for (CAbstractAction action : actions) {
-            JComponent comp = action.buildComponent();
+            Component comp = action.buildComponent();
+            action.customize(comp);
             components.put(action, comp);
             add(comp);
         }

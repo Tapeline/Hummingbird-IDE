@@ -1,6 +1,8 @@
 package me.tapeline.carousellib.elements.actionbar;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.function.BiConsumer;
 
 public class CButtonAction extends CAbstractAction {
@@ -8,6 +10,11 @@ public class CButtonAction extends CAbstractAction {
     private String text;
     private Icon icon;
     private BiConsumer<CAbstractAction, JComponent> onAction;
+    private JButton button;
+
+    public CButtonAction(JButton button) {
+        this.button = button;
+    }
 
     public CButtonAction(String text, Icon icon) {
         this.text = text;
@@ -44,7 +51,8 @@ public class CButtonAction extends CAbstractAction {
     }
 
     @Override
-    public JComponent buildComponent() {
+    public Component buildComponent() {
+        if (button != null) return button;
         JButton actionButton = new JButton();
         if (text != null)
             actionButton.setText(text);

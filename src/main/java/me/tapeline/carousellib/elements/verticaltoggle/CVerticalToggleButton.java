@@ -16,14 +16,14 @@ public class CVerticalToggleButton extends JToggleButton {
         template = new XButton(icon, text, getFont());
         this.clockwise = clockwise;
         updateDimensions();
-        template.setContentAreaFilled(false);
+        setContentAreaFilled(false);
         addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                template.setContentAreaFilled(true);
+                setContentAreaFilled(true);
             }
 
             public void mouseExited(MouseEvent e) {
-                template.setContentAreaFilled(isSelected());
+                setContentAreaFilled(isSelected());
             }
         });
     }
@@ -55,6 +55,7 @@ public class CVerticalToggleButton extends JToggleButton {
             g2.rotate(-Math.PI / 2.0);
         }
         template.setSelected(getModel().isSelected());
+        template.setContentAreaFilled(isContentAreaFilled());
         template.paintComponent(g2);
         g2.dispose();
     }
