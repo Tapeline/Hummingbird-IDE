@@ -1,0 +1,25 @@
+package me.tapeline.hummingbird.ide.expansion.files;
+
+import me.tapeline.hummingbird.ide.expansion.RegistryEntry;
+import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
+import me.tapeline.hummingbird.ide.project.Project;
+
+import javax.swing.*;
+import java.io.File;
+
+public abstract class AbstractFileType implements RegistryEntry {
+
+    public abstract String name();
+
+    public abstract Icon icon();
+
+    public abstract boolean doCustomOpen();
+
+    public abstract boolean applies(File file);
+
+    public void customOpen(EditorWindow editor, File file) {}
+
+    public abstract void setupContextMenu(EditorWindow editor, JPopupMenu menu,
+                                          File contextFile, Project contextProject);
+
+}
