@@ -1,10 +1,8 @@
 package me.tapeline.hummingbird.ide;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import me.tapeline.carousellib.configuration.exceptions.ConfigurationCorruptedException;
 import me.tapeline.carousellib.configuration.exceptions.SectionCorruptedException;
-import me.tapeline.carousellib.data.Pair;
 import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.exceptions.FileReadException;
 import me.tapeline.carousellib.icons.CBundledIcon;
@@ -21,11 +19,15 @@ import me.tapeline.hummingbird.ide.frames.welcome.WelcomeWindow;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Application {
 
@@ -34,9 +36,21 @@ public class Application {
     private final List<AppWindow> windows = new ArrayList<>();
     private final String ideRootPath;
     private final Configuration configuration;
+    private final Logger logger;
 
     public Application() throws ConfigurationCorruptedException,
             FileReadException, SectionCorruptedException {
+        logger = Logger.getLogger("Application");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yy_HH-mm-ss");
+        try {
+            new File("logs").mkdirs();
+            FileHandler fileHandler = new FileHandler("logs/Log " +
+                    format.format(Calendar.getInstance().getTime()) + ".log");
+            fileHandler.setFormatter(new SimpleFormatter());
+            logger.addHandler(fileHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ideRootPath = new File("").getAbsolutePath();
         configuration = new Configuration(Paths.get(
                 ideRootPath, "config.yml"
@@ -54,10 +68,11 @@ public class Application {
     }
 
     public void loadFonts() {
-
+        logger.info("Loading fonts");
     }
 
     public void loadCore() {
+        logger.info("Loading core");
         Registry.register(new GenericFile());
         Registry.register(new GenericFolder());
         Registry.register(new ProjectFileType());
@@ -66,6 +81,7 @@ public class Application {
     }
 
     public void run() throws Exception {
+        logger.info("Starting");
         SplashScreen splashScreen = new SplashScreen(ImageIO.read(
                 Application.class.getClassLoader().getResource(
                         "images/splash.png"
@@ -78,6 +94,7 @@ public class Application {
         loadFonts();
         loadCore();
 
+        logger.info("Applying theme");
         AbstractTheme theme = Registry.getTheme(configuration.appearance().getString("theme"));
         if (theme == null) {
             Dialogs.warn(splashScreen, "Theme not found", "Theme provided in " +
@@ -91,6 +108,7 @@ public class Application {
         splashScreen.setVisible(false);
         splashScreen.dispose();
 
+        logger.info("Startup complete");
         //WelcomeWindow welcomeWindow = new WelcomeWindow();
         EditorWindow window = new EditorWindow(null);
     }
@@ -105,6 +123,14 @@ public class Application {
 
     public List<AppWindow> getWindows() {
         return windows;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
 }

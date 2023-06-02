@@ -8,10 +8,12 @@ import me.tapeline.carousellib.icons.navigation.CDownIcon;
 import me.tapeline.carousellib.icons.navigation.CMenuIcon;
 import me.tapeline.carousellib.icons.navigation.CPackageIcon;
 import me.tapeline.carousellib.icons.state.CWarningIcon;
+import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.FS;
 import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
+import me.tapeline.hummingbird.ide.frames.editor.tooltabs.EventsToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
 import me.tapeline.hummingbird.ide.project.Project;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class EditorWindow extends AppWindow {
 
@@ -51,25 +54,26 @@ public class EditorWindow extends AppWindow {
 
     private ProjectToolTab projectToolTab;
     private TodoToolTab todoToolTab;
+    private EventsToolTab eventsToolTab;
 
     private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
     private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
     private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
+    private Logger logger;
 
     public EditorWindow(Project project) throws ProjectDirectoryException {
         //super("Hummingbird - " + project.getRoot().getName());
         super("Hummingbird - ");
+        logger = Application.instance.getLogger();
 
         setupUI();
 
         projectToolTab.getFileTree().setProject(
                 new Project(new File("src/test/resources/testProj")));
+
         addLeftToolTab(projectToolTab);
         addBottomToolTab(todoToolTab);
-
-        studioPanel.getRightTabs().addTab(new CDownIcon(12), "Logs", new CSimpleTab(
-                new JLabel("No logs")
-        ));
+        addRightToolTab(eventsToolTab);
 
         leftStatus.setText("Ready");
         rightStatus.setText("|/ master");
@@ -84,9 +88,12 @@ public class EditorWindow extends AppWindow {
         setSize(900, 600);
         centerOnScreen();
         setVisible(true);
+        logger.info("Editor created");
+        logger.severe("WASSUP BEIJING");
     }
 
     private void setupUI() {
+        logger.info("Creating UI for editor");
         centralContainer.setLayout(new BorderLayout());
         studioPanel = new StudioPanel();
         studioPanel.setBorder(new EmptyBorder(0, 4, 0, 4));
@@ -109,11 +116,14 @@ public class EditorWindow extends AppWindow {
 
         projectToolTab = new ProjectToolTab(this);
         todoToolTab = new TodoToolTab(this);
+        eventsToolTab = new EventsToolTab(this);
     }
 
     public void openFile(File file) {
+        logger.info("Trying to open file " + file);
         AbstractFileType fileType = FS.getFileType(file);
         if (fileType.doCustomOpen()) {
+            logger.info("Delegated opening to " + fileType.getClass().getName());
             fileType.customOpen(this, file);
             return;
         }
@@ -129,6 +139,7 @@ public class EditorWindow extends AppWindow {
                     return;
                 }
         workspaceTabs.addTab(name, icon, tab);
+        logger.info("Added tab '" + name + "'");
     }
 
     public void addBottomToolTab(AbstractToolTab toolTab) {
@@ -136,6 +147,7 @@ public class EditorWindow extends AppWindow {
         JComponent tabComponent = toolTab.buildToolTab(this,
                 new HideTabButton(this, HideTabButton.BOTTOM));
         studioPanel.getBottomTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+        logger.info("Added bottom tool tab '" + toolTab.name() + "'");
     }
 
     public void addLeftToolTab(AbstractToolTab toolTab) {
@@ -143,6 +155,7 @@ public class EditorWindow extends AppWindow {
         JComponent tabComponent = toolTab.buildToolTab(this,
                 new HideTabButton(this, HideTabButton.LEFT));
         studioPanel.getLeftTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+        logger.info("Added left tool tab '" + toolTab.name() + "'");
     }
 
     public void addRightToolTab(AbstractToolTab toolTab) {
@@ -150,6 +163,7 @@ public class EditorWindow extends AppWindow {
         JComponent tabComponent = toolTab.buildToolTab(this,
                 new HideTabButton(this, HideTabButton.RIGHT));
         studioPanel.getRightTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
+        logger.info("Added right tool tab '" + toolTab.name() + "'");
     }
 
     public HFileTree getFileTree() {

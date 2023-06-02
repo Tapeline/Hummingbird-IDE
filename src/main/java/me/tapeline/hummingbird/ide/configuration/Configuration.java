@@ -4,6 +4,7 @@ import me.tapeline.carousellib.configuration.ConfigurationSection;
 import me.tapeline.carousellib.configuration.YamlConfiguration;
 import me.tapeline.carousellib.configuration.exceptions.ConfigurationCorruptedException;
 import me.tapeline.carousellib.configuration.exceptions.SectionCorruptedException;
+import me.tapeline.carousellib.configuration.fields.IntField;
 import me.tapeline.carousellib.configuration.fields.LongField;
 import me.tapeline.carousellib.configuration.fields.StringField;
 import me.tapeline.carousellib.data.Dict;
@@ -21,6 +22,10 @@ public class Configuration {
             )),
             new ConfigurationSection("appearance", Dict.make(
                     new Pair<>("theme", new StringField("dark"))
+            )),
+            new ConfigurationSection("logs", Dict.make(
+                    new Pair<>("keepErrorsInPane", new IntField(40)),
+                    new Pair<>("keepLogsInPane", new IntField(70))
             ))
     };
 
@@ -48,6 +53,10 @@ public class Configuration {
 
     public ConfigurationSection appearance() {
         return sections[1];
+    }
+
+    public ConfigurationSection logs() {
+        return sections[2];
     }
 
 }
