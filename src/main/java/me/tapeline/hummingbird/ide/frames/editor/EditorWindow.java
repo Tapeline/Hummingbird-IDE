@@ -1,40 +1,41 @@
 package me.tapeline.hummingbird.ide.frames.editor;
 
+import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
 import me.tapeline.carousellib.elements.closabletabs.CClosableTabbedPane;
 import me.tapeline.carousellib.elements.actionbar.CActionBar;
 import me.tapeline.carousellib.elements.crumbdisplay.CCrumbDisplay;
 import me.tapeline.carousellib.elements.slotpanel.CSimpleTab;
-import me.tapeline.carousellib.icons.navigation.CDownIcon;
-import me.tapeline.carousellib.icons.navigation.CMenuIcon;
-import me.tapeline.carousellib.icons.navigation.CPackageIcon;
-import me.tapeline.carousellib.icons.state.CWarningIcon;
+import me.tapeline.carousellib.icons.commonactions.CPlayIcon;
+import me.tapeline.carousellib.icons.commonactions.CStopIcon;
 import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.FS;
 import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
+import me.tapeline.hummingbird.ide.frames.Dialogs;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.EventsToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
+import me.tapeline.hummingbird.ide.frames.runconfigs.RunConfigurationsDialog;
 import me.tapeline.hummingbird.ide.project.Project;
-import me.tapeline.hummingbird.ide.ui.filetree.FileTreeNode;
 import me.tapeline.hummingbird.ide.ui.filetree.HFileTree;
 import me.tapeline.hummingbird.ide.ui.studiopanel.StudioPanel;
 import me.tapeline.hummingbird.ide.ui.tabs.AbstractWorkspaceTab;
 import me.tapeline.hummingbird.ide.ui.tabs.DefaultCodeEditorTab;
+import me.tapeline.hummingbird.ide.ui.tools.RunConfigurationListRenderer;
 import me.tapeline.hummingbird.ide.ui.tooltabs.AbstractToolTab;
 import me.tapeline.hummingbird.ide.ui.tooltabs.HideTabButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EditorWindow extends AppWindow {
@@ -47,6 +48,10 @@ public class EditorWindow extends AppWindow {
     private JPanel upperActionBarContainer;
     private JPanel centralContainer;
     private JPanel pathCrumbContainer;
+    private JComboBox<Object> runConfigurationBox;
+    private JButton runConfigurationStartButton;
+    private JButton runConfigurationStopButton;
+    private JButton runConfigurationEditButton;
     private CActionBar upperActionBar;
     private StudioPanel studioPanel;
     private CCrumbDisplay pathCrumbs;
@@ -55,21 +60,38 @@ public class EditorWindow extends AppWindow {
     private ProjectToolTab projectToolTab;
     private TodoToolTab todoToolTab;
     private EventsToolTab eventsToolTab;
-
     private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
     private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
     private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
+
     private Logger logger;
+    private Project project;
 
     public EditorWindow(Project project) throws ProjectDirectoryException {
-        //super("Hummingbird - " + project.getRoot().getName());
-        super("Hummingbird - ");
+        super("Hummingbird - " + project.getRoot().getName());
+        //super("Hummingbird - ");
+        this.project = project;
         logger = Application.instance.getLogger();
 
         setupUI();
 
-        projectToolTab.getFileTree().setProject(
-                new Project(new File("src/test/resources/testProj")));
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                boolean exit = Dialogs.confirmYesNo(null, "Exiting",
+                        "Do you really want to exit?");
+                if (!exit) return;
+                try {
+                    project.save();
+                } catch (ProjectDirectoryException e) {
+                    logger.log(Level.SEVERE, "Exception while exiting", e);
+                }
+                dispose();
+            }
+        });
+
+        projectToolTab.getFileTree().setProject(project);
 
         addLeftToolTab(projectToolTab);
         addBottomToolTab(todoToolTab);
@@ -89,7 +111,6 @@ public class EditorWindow extends AppWindow {
         centerOnScreen();
         setVisible(true);
         logger.info("Editor created");
-        logger.severe("WASSUP BEIJING");
     }
 
     private void setupUI() {
@@ -117,6 +138,28 @@ public class EditorWindow extends AppWindow {
         projectToolTab = new ProjectToolTab(this);
         todoToolTab = new TodoToolTab(this);
         eventsToolTab = new EventsToolTab(this);
+
+        runConfigurationStartButton.setIcon(new CPlayIcon(16));
+        runConfigurationStopButton.setIcon(new CStopIcon(16));
+        runConfigurationBox.setRenderer(new RunConfigurationListRenderer());
+        runConfigurationEditButton.addActionListener(e -> {
+            RunConfigurationsDialog dialog = null;
+            try {
+                dialog = new RunConfigurationsDialog(
+                        EditorWindow.this,
+                        new ArrayList<>((List<RunConfiguration>) project.getConfiguration().running()
+                                .getList("configurations"))
+                );
+                dialog.dialog();
+                List<RunConfiguration> result = dialog.getResult();
+                if (result == null) return;
+                project.getConfiguration().running().set("configurations", result);
+                refreshConfigurations();
+            } catch (FieldNotFoundException ex) {
+                Dialogs.error(EditorWindow.this, "Error", ex.toString());
+            }
+        });
+        refreshConfigurations();
     }
 
     public void openFile(File file) {
@@ -164,6 +207,17 @@ public class EditorWindow extends AppWindow {
                 new HideTabButton(this, HideTabButton.RIGHT));
         studioPanel.getRightTabs().addTab(toolTab.icon(), toolTab.name(), new CSimpleTab(tabComponent));
         logger.info("Added right tool tab '" + toolTab.name() + "'");
+    }
+
+    public void refreshConfigurations() {
+        runConfigurationBox.removeAllItems();
+        List<?> configurations = new ArrayList<>();
+        try {
+            configurations = project.getConfiguration().running().getList("configurations");
+        } catch (FieldNotFoundException ignored) {}
+        for (Object object : configurations)
+            if (object instanceof RunConfiguration runConfiguration)
+                runConfigurationBox.addItem(runConfiguration);
     }
 
     public HFileTree getFileTree() {

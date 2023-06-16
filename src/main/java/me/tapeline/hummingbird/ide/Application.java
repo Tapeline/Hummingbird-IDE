@@ -7,15 +7,16 @@ import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.exceptions.FileReadException;
 import me.tapeline.carousellib.icons.CBundledIcon;
 import me.tapeline.hummingbird.ide.configuration.Configuration;
-import me.tapeline.hummingbird.ide.expansion.files.GenericFile;
-import me.tapeline.hummingbird.ide.expansion.files.GenericFolder;
+import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFile;
+import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
 import me.tapeline.hummingbird.ide.expansion.files.ProjectFileType;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.standard.shellscript.ShellScriptConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;
-import me.tapeline.hummingbird.ide.expansion.themes.builtin.darcula.DarculaTheme;
+import me.tapeline.hummingbird.ide.expansion.themes.standard.darcula.DarculaTheme;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.frames.splash.SplashScreen;
-import me.tapeline.hummingbird.ide.frames.welcome.WelcomeWindow;
+import me.tapeline.hummingbird.ide.project.Project;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -32,6 +33,10 @@ import java.util.logging.SimpleFormatter;
 public class Application {
 
     public static Application instance;
+
+    public static Logger getStaticLogger() {
+        return instance.logger;
+    }
 
     private final List<AppWindow> windows = new ArrayList<>();
     private final String ideRootPath;
@@ -78,6 +83,8 @@ public class Application {
         Registry.register(new ProjectFileType());
 
         Registry.register(new DarculaTheme());
+
+        Registry.register(new ShellScriptConfigurationRunner());
     }
 
     public void run() throws Exception {
@@ -110,7 +117,7 @@ public class Application {
 
         logger.info("Startup complete");
         //WelcomeWindow welcomeWindow = new WelcomeWindow();
-        EditorWindow window = new EditorWindow(null);
+        EditorWindow window = new EditorWindow(new Project(new File("src/test/resources/testProj")));
     }
 
     public void addWindow(AppWindow window) {

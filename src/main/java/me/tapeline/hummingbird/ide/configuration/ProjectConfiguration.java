@@ -4,13 +4,16 @@ import me.tapeline.carousellib.configuration.ConfigurationSection;
 import me.tapeline.carousellib.configuration.YamlConfiguration;
 import me.tapeline.carousellib.configuration.exceptions.ConfigurationCorruptedException;
 import me.tapeline.carousellib.configuration.exceptions.SectionCorruptedException;
+import me.tapeline.carousellib.configuration.fields.ListField;
 import me.tapeline.carousellib.configuration.fields.LongField;
 import me.tapeline.carousellib.configuration.fields.StringField;
 import me.tapeline.carousellib.data.Dict;
 import me.tapeline.carousellib.data.Pair;
 import me.tapeline.carousellib.exceptions.FileReadException;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 
 import java.io.File;
+import java.util.Collections;
 
 public class ProjectConfiguration {
 
@@ -18,6 +21,10 @@ public class ProjectConfiguration {
     private ConfigurationSection[] sections = {
             new ConfigurationSection("general", Dict.make(
                     new Pair<>("type", new StringField("plain"))
+            )),
+            new ConfigurationSection("running", Dict.make(
+                    new Pair<>("configurations",
+                            new ListField<RunConfiguration>(Collections.emptyList()))
             ))
     };
 
@@ -41,6 +48,9 @@ public class ProjectConfiguration {
 
     public ConfigurationSection general() {
         return sections[0];
+    }
+    public ConfigurationSection running() {
+        return sections[1];
     }
 
 }

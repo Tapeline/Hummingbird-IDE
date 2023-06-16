@@ -59,7 +59,41 @@
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <toolbar id="19783">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="-1" height="20"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="d45d0" class="javax.swing.JButton" binding="runConfigurationEditButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Edit"/>
+                    </properties>
+                  </component>
+                  <component id="c31fb" class="javax.swing.JComboBox" binding="runConfigurationBox">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                  <component id="50a7d" class="javax.swing.JButton" binding="runConfigurationStartButton">
+                    <constraints/>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="468e4" class="javax.swing.JButton" binding="runConfigurationStopButton">
+                    <constraints/>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </toolbar>
+            </children>
           </grid>
           <grid id="f8e76" binding="pathCrumbContainer" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>

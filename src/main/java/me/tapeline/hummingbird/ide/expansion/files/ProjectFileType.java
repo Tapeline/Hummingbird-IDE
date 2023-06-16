@@ -1,8 +1,8 @@
 package me.tapeline.hummingbird.ide.expansion.files;
 
 import me.tapeline.carousellib.icons.items.CColorFolderIcon;
-import me.tapeline.carousellib.icons.items.CPlainFolderIcon;
 import me.tapeline.carousellib.utils.AdaptableColor;
+import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.menus.context.ItemDelete;
@@ -10,7 +10,6 @@ import me.tapeline.hummingbird.ide.ui.menus.context.ItemDelete;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.List;
 
 public class ProjectFileType extends GenericFolder {
 

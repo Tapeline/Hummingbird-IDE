@@ -1,5 +1,6 @@
 package me.tapeline.hummingbird.ide.frames;
 
+import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.utils.Utils;
 
 import javax.swing.*;
@@ -101,6 +102,7 @@ public class Dialogs {
     }
 
     public static void error(Component form, String title, String text) {
+        Application.getStaticLogger().severe(text);
         JOptionPane.showMessageDialog(
                 form,
                 text,
@@ -110,6 +112,7 @@ public class Dialogs {
     }
 
     public static void warn(Component form, String title, String text) {
+        Application.getStaticLogger().warning(text);
         JOptionPane.showMessageDialog(
                 form,
                 text,

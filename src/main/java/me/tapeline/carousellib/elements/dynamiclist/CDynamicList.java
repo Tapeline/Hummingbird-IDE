@@ -77,6 +77,7 @@ public class CDynamicList<E> extends JPanel {
         E result = onAddCall.apply(this);
         if (result != null)
             listData.add(result);
+        list.setListData(listData);
         list.updateUI();
     }
 
@@ -85,6 +86,7 @@ public class CDynamicList<E> extends JPanel {
             Boolean result = onRemoveCall.apply(list.getSelectedValue());
             if (result)
                 listData.remove(list.getSelectedIndex());
+            list.setListData(listData);
             list.updateUI();
         }
     }
@@ -98,6 +100,7 @@ public class CDynamicList<E> extends JPanel {
             Boolean result = onRemoveCall.apply(e);
             if (result) listData.remove(e);
         }
+        list.setListData(listData);
         list.updateUI();
     }
 
@@ -107,6 +110,7 @@ public class CDynamicList<E> extends JPanel {
                 int index = list.getSelectedIndex();
                 E elem = listData.remove(index);
                 listData.add(index - 1, elem);
+                list.setListData(listData);
                 list.setSelectedIndex(index - 1);
                 list.updateUI();
             }
@@ -119,6 +123,7 @@ public class CDynamicList<E> extends JPanel {
                 int index = list.getSelectedIndex();
                 E elem = listData.remove(index);
                 listData.add(index + 1, elem);
+                list.setListData(listData);
                 list.setSelectedIndex(index + 1);
                 list.updateUI();
             }

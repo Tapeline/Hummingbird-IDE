@@ -7,10 +7,6 @@ import java.awt.*;
 
 public class CWarningIcon extends CBundledIcon {
 
-    public static AdaptableColor yellow = new AdaptableColor(
-            new Color(0xA68E35),
-            new Color(0xBC9018)
-    );
     public static AdaptableColor inner = new AdaptableColor(
             new Color(0xFFFFFF),
             new Color(0xC0C0C0)

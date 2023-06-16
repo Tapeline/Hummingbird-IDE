@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.expansion.themes.builtin.darcula;
+package me.tapeline.hummingbird.ide.expansion.themes.standard.darcula;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;

@@ -12,6 +12,21 @@ public abstract class CBundledIcon implements Icon {
             new Color(134, 146, 154)
     );
 
+    public static AdaptableColor red = new AdaptableColor(
+            new Color(0x803130),
+            new Color(0xC55350)
+    );
+
+    public static AdaptableColor yellow = new AdaptableColor(
+            new Color(0xA68E35),
+            new Color(0xBC9018)
+    );
+
+    public static AdaptableColor green = new AdaptableColor(
+            new Color(0x539551),
+            new Color(0x489B54)
+    );
+
     public static final int DEFAULT_WIDTH = 32;
     public static final int DEFAULT_HEIGHT = 32;
 
