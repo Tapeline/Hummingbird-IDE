@@ -4,6 +4,7 @@ import me.tapeline.hummingbird.ide.configuration.ProjectConfiguration;
 import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
 
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Paths;
 
 public class Project {
@@ -61,6 +62,10 @@ public class Project {
 
     public ProjectConfiguration getConfiguration() {
         return configuration;
+    }
+
+    public URI relativeFor(File file) {
+        return root.getAbsoluteFile().toURI().relativize(file.getAbsoluteFile().toURI());
     }
 
 }

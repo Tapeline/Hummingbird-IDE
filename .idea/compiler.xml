@@ -9,5 +9,8 @@
         <module name="Hummingbird-IDE" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="HummingbirdAPI" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

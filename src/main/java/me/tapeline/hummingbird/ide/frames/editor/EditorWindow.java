@@ -23,9 +23,11 @@ import me.tapeline.hummingbird.ide.ui.filetree.HFileTree;
 import me.tapeline.hummingbird.ide.ui.studiopanel.StudioPanel;
 import me.tapeline.hummingbird.ide.ui.tabs.AbstractWorkspaceTab;
 import me.tapeline.hummingbird.ide.ui.tabs.DefaultCodeEditorTab;
+import me.tapeline.hummingbird.ide.ui.tabs.FileReferencingTab;
 import me.tapeline.hummingbird.ide.ui.tools.RunConfigurationListRenderer;
 import me.tapeline.hummingbird.ide.ui.tooltabs.AbstractToolTab;
 import me.tapeline.hummingbird.ide.ui.tooltabs.HideTabButton;
+import me.tapeline.hummingbird.ide.utils.PathUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -33,9 +35,13 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class EditorWindow extends AppWindow {
@@ -92,24 +98,29 @@ public class EditorWindow extends AppWindow {
         });
 
         projectToolTab.getFileTree().setProject(project);
+        setPathCrumbFile(null);
 
         addLeftToolTab(projectToolTab);
         addBottomToolTab(todoToolTab);
         addRightToolTab(eventsToolTab);
 
         leftStatus.setText("Ready");
+        logger.addHandler(new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                leftStatus.setText(record.getMessage());
+            }
+            public void flush() { }
+            public void close() throws SecurityException { }
+        });
         rightStatus.setText("|/ master");
-
-        pathCrumbs.addCrumb("Test");
-        pathCrumbs.addCrumb("Test");
-        pathCrumbs.addCrumb("Test");
-        pathCrumbs.addCrumb("Test");
 
         setContentPane(root);
 
         setSize(900, 600);
         centerOnScreen();
         setVisible(true);
+
         logger.info("Editor created");
     }
 
@@ -133,7 +144,9 @@ public class EditorWindow extends AppWindow {
         workspaceTabs.addTabCloseListener((e) -> {
             if (e.getTab().getBoundComponent() instanceof AbstractWorkspaceTab tab)
                 tab.save();
+            updatePathCrumbs();
         });
+        workspaceTabs.addChangeListener(e -> updatePathCrumbs());
 
         projectToolTab = new ProjectToolTab(this);
         todoToolTab = new TodoToolTab(this);
@@ -209,6 +222,25 @@ public class EditorWindow extends AppWindow {
         logger.info("Added right tool tab '" + toolTab.name() + "'");
     }
 
+    public void setPathCrumbFile(File file) {
+        if (file == null) {
+            setPathCrumbData(Collections.singletonList(project.getRoot().getName()));
+            return;
+        }
+        List<File> roots = PathUtils.split(file, project.getRoot());
+        List<String> names = new ArrayList<>();
+        for (File root : roots)
+            names.add(root.getName());
+        setPathCrumbData(names);
+    }
+
+    public void setPathCrumbData(List<String> data) {
+        pathCrumbs.getCrumbs().clear();
+        pathCrumbs.reconstruct();
+        for (String crumb : data)
+            pathCrumbs.addCrumb(crumb);
+    }
+
     public void refreshConfigurations() {
         runConfigurationBox.removeAllItems();
         List<?> configurations = new ArrayList<>();
@@ -218,6 +250,13 @@ public class EditorWindow extends AppWindow {
         for (Object object : configurations)
             if (object instanceof RunConfiguration runConfiguration)
                 runConfigurationBox.addItem(runConfiguration);
+    }
+
+    private void updatePathCrumbs() {
+        if (workspaceTabs.getSelectedComponent() instanceof FileReferencingTab tab)
+            setPathCrumbFile(tab.getFile());
+        else
+            setPathCrumbFile(null);
     }
 
     public HFileTree getFileTree() {

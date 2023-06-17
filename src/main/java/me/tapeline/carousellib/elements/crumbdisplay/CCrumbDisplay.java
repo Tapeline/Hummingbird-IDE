@@ -37,4 +37,10 @@ public class CCrumbDisplay extends JPanel {
         return crumbs;
     }
 
+    public void reconstruct() {
+        removeAll();
+        for (JLabel label : crumbs)
+            add(label);
+    }
+
 }

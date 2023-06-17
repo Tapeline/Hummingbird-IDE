@@ -13,7 +13,7 @@ import javax.swing.text.Segment;
 import java.awt.*;
 import java.io.File;
 
-public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
+public class DefaultCodeEditorTab extends AbstractWorkspaceTab implements FileReferencingTab {
 
     protected RTextScrollPane scrollPane;
     protected HSyntaxTextArea textArea;
@@ -249,6 +249,11 @@ public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
             if (replace)
                 textArea.setText(currentContents);
         }
+    }
+
+    @Override
+    public File getFile() {
+        return file;
     }
 
 }
