@@ -176,6 +176,7 @@ public class Application {
         }
         theme.onApply();
         CBundledIcon.darkMode = theme.isDark();
+        Registry.currentTheme = theme;
 
         try { Thread.sleep(600); } catch (InterruptedException ignored) {}
         splashScreen.setVisible(false);

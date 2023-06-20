@@ -1,8 +1,11 @@
 package me.tapeline.hummingbird.ide.ui.tabs;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
 import me.tapeline.carousellib.dialogs.Dialogs;
+import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.FS;
+import me.tapeline.hummingbird.ide.Registry;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.ui.syntaxtextarea.HSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -35,6 +38,28 @@ public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
         scrollPane.getGutter().setBorderColor(UIManager.getColor("Panel.background"));
         textArea.setSelectionColor(UIManager.getColor("TextArea.selectionBackground"));
         textArea.setSelectedTextColor(UIManager.getColor("TextArea.selectionForeground"));
+        if (Registry.currentTheme.isDark())
+            textArea.setCurrentLineHighlightColor(UIManager.getColor("TextArea.background").brighter());
+        else
+            textArea.setCurrentLineHighlightColor(UIManager.getColor("TextArea.background").darker());
+        textArea.getSyntaxScheme().getStyle(TokenTypes.IDENTIFIER).foreground =
+                UIManager.getColor("TextArea.foreground");
+
+        int tabSize = 4;
+        try {
+            tabSize = Application.instance.getConfiguration().editor().getInt("spacesInTab");
+        } catch (FieldNotFoundException ignored) { }
+        textArea.setTabSize(tabSize);
+        textArea.setTabsEmulated(true);
+
+        Font font = new Font("Consolas", Font.PLAIN, 16);
+        try {
+            String family = Application.instance.getConfiguration().editor().getString("font");
+            int size = Application.instance.getConfiguration().editor().getInt("fontSize");
+            font = new Font(family, Font.PLAIN, size);
+        } catch (FieldNotFoundException ignored) {}
+        textArea.setFont(font);
+
         /*textArea.setTokenMaker(new TokenMakerBase() {
             private int currentTokenType;
             private int currentTokenStart;

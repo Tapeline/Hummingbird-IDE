@@ -3,7 +3,10 @@ package me.tapeline.hummingbird.ide.ui.syntaxtextarea;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.TokenMaker;
+
+import java.awt.*;
 
 public class HSyntaxTextArea extends RSyntaxTextArea {
 

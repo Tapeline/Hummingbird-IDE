@@ -4,3 +4,4 @@ target/
 
 .ide/
 /out/
+/cloc.exe

@@ -37,6 +37,11 @@ public class Configuration {
             new ConfigurationSection("plugins", Dict.make(
                     new Pair<>("home", new StringField("plugins")),
                     new Pair<>("enabled", new ListField<String>(new ArrayList<>()))
+            )),
+            new ConfigurationSection("editor", Dict.make(
+                    new Pair<>("font", new StringField("Monospace")),
+                    new Pair<>("fontSize", new IntField(16)),
+                    new Pair<>("spacesInTab", new IntField(4))
             ))
     };
 
@@ -76,6 +81,10 @@ public class Configuration {
 
     public ConfigurationSection plugins() {
         return sections[4];
+    }
+
+    public ConfigurationSection editor() {
+        return sections[5];
     }
 
 }

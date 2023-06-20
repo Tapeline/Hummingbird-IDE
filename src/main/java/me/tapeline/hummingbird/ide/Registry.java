@@ -16,6 +16,8 @@ public class Registry {
     public static List<AbstractConfigurationRunner> configurationRunners = new ArrayList<>();
     public static List<AbstractProjectGenerator> projectGenerators = new ArrayList<>();
 
+    public static AbstractTheme currentTheme = null;
+
     public static void registerAll(List<? extends RegistryEntry> objects) {
         for (RegistryEntry object : objects)
             register(object);
