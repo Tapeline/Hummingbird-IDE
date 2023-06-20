@@ -16,6 +16,7 @@ import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.EventsToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
+import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TerminalToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
 import me.tapeline.hummingbird.ide.frames.runconfigs.RunConfigurationsDialog;
 import me.tapeline.hummingbird.ide.project.Project;
@@ -60,6 +61,7 @@ public class EditorWindow extends AppWindow {
     private ProjectToolTab projectToolTab;
     private TodoToolTab todoToolTab;
     private EventsToolTab eventsToolTab;
+    private TerminalToolTab terminalToolTab;
     private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
     private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
     private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
@@ -113,6 +115,7 @@ public class EditorWindow extends AppWindow {
         addLeftToolTab(projectToolTab);
         addBottomToolTab(todoToolTab);
         addRightToolTab(eventsToolTab);
+        addBottomToolTab(terminalToolTab);
 
         leftStatus.setText("Ready");
         rightStatus.setText("|/ master");
@@ -155,6 +158,7 @@ public class EditorWindow extends AppWindow {
         projectToolTab = new ProjectToolTab(this);
         todoToolTab = new TodoToolTab(this);
         eventsToolTab = new EventsToolTab(this);
+        terminalToolTab = new TerminalToolTab(this);
 
         runConfigurationStartButton.setIcon(new CPlayIcon(16));
         runConfigurationStopButton.setIcon(new CStopIcon(16));

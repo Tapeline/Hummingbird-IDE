@@ -3,6 +3,7 @@ package me.tapeline.hummingbird.ide;
 import me.tapeline.carousellib.elements.verticaltoggle.CVerticalToggleButton;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +35,7 @@ public class Test {
     public static void main2(String[] args) {
         List<String> colors = new ArrayList<>();
         for (Map.Entry<Object, Object> entry : UIManager.getDefaults().entrySet()) {
-            if (entry.getValue() instanceof Color) {
+            if (entry.getValue() instanceof Border) {
                 colors.add((String) entry.getKey()); // all the keys are strings
             }
         }
