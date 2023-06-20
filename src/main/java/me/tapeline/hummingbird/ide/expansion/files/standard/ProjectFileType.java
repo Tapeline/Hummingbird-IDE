@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.expansion.files;
+package me.tapeline.hummingbird.ide.expansion.files.standard;
 
 import me.tapeline.carousellib.icons.items.CColorFolderIcon;
 import me.tapeline.carousellib.utils.AdaptableColor;
@@ -12,6 +12,13 @@ import java.awt.*;
 import java.io.File;
 
 public class ProjectFileType extends GenericFolder {
+
+    private static Icon cachedIcon;
+    public static Icon getIcon() {
+        if (cachedIcon == null)
+            cachedIcon = new ProjectFileType().icon();
+        return cachedIcon;
+    }
 
     @Override
     public String id() {
@@ -32,11 +39,6 @@ public class ProjectFileType extends GenericFolder {
                 ),
                 16
         );
-    }
-
-    @Override
-    public boolean doCustomOpen() {
-        return false;
     }
 
     @Override

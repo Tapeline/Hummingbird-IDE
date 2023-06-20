@@ -1,6 +1,7 @@
 package me.tapeline.hummingbird.ide.frames.editor;
 
 import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
+import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.elements.closabletabs.CClosableTabbedPane;
 import me.tapeline.carousellib.elements.actionbar.CActionBar;
 import me.tapeline.carousellib.elements.crumbdisplay.CCrumbDisplay;
@@ -13,7 +14,6 @@ import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
-import me.tapeline.hummingbird.ide.frames.Dialogs;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.EventsToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
 import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
@@ -69,9 +69,25 @@ public class EditorWindow extends AppWindow {
 
     public EditorWindow(Project project) throws ProjectDirectoryException {
         super("Hummingbird - " + project.getRoot().getName());
-        //super("Hummingbird - ");
         this.project = project;
         logger = Application.instance.getLogger();
+
+        try {
+            List<String> lastProjects = (List<String>) Application.instance.getConfiguration()
+                    .latestRun().getList("projectHistory");
+            boolean contains = false;
+            for (String projectPathString : lastProjects)
+                if (new File(projectPathString).getAbsoluteFile().equals(project.getRoot().getAbsoluteFile())) {
+                    contains = true;
+                    break;
+                }
+            if (!contains) {
+                lastProjects.add(project.getRoot().getAbsolutePath());
+                Application.instance.getConfiguration().latestRun().set("projectHistory", lastProjects);
+            }
+        } catch (FieldNotFoundException e) {
+            Dialogs.exception("Error", "Error logging opened project", e);
+        }
 
         setupUI();
 
@@ -87,6 +103,7 @@ public class EditorWindow extends AppWindow {
                 } catch (ProjectDirectoryException e) {
                     logger.log(Level.SEVERE, "Exception while exiting", e);
                 }
+                Application.instance.saveConfig();
                 dispose();
             }
         });

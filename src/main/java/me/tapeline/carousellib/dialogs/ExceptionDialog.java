@@ -1,9 +1,12 @@
 package me.tapeline.carousellib.dialogs;
 
+import me.tapeline.hummingbird.ide.Application;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
 
 public class ExceptionDialog extends JDialog {
     private JPanel contentPane;
@@ -15,6 +18,8 @@ public class ExceptionDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+
+        Application.getStaticLogger().log(Level.SEVERE, message, exception);
 
         setTitle(title);
 

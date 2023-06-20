@@ -1,20 +1,19 @@
 package me.tapeline.hummingbird.ide.frames.runconfigs;
 
 import me.tapeline.carousellib.data.Pair;
+import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.elements.dynamiclist.CDynamicList;
 import me.tapeline.hummingbird.ide.Registry;
 import me.tapeline.hummingbird.ide.exceptions.InvalidFieldsInEditorProvidedWarning;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfigurationEditorPanel;
-import me.tapeline.hummingbird.ide.frames.Dialogs;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.ui.tools.RunConfigurationListRenderer;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 

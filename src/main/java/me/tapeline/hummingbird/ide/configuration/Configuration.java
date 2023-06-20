@@ -5,6 +5,7 @@ import me.tapeline.carousellib.configuration.YamlConfiguration;
 import me.tapeline.carousellib.configuration.exceptions.ConfigurationCorruptedException;
 import me.tapeline.carousellib.configuration.exceptions.SectionCorruptedException;
 import me.tapeline.carousellib.configuration.fields.IntField;
+import me.tapeline.carousellib.configuration.fields.ListField;
 import me.tapeline.carousellib.configuration.fields.LongField;
 import me.tapeline.carousellib.configuration.fields.StringField;
 import me.tapeline.carousellib.data.Dict;
@@ -12,13 +13,16 @@ import me.tapeline.carousellib.data.Pair;
 import me.tapeline.carousellib.exceptions.FileReadException;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Configuration {
 
     private YamlConfiguration configFile;
     private ConfigurationSection[] sections = {
             new ConfigurationSection("latestRun", Dict.make(
-                    new Pair<>("timestamp", new LongField(System.currentTimeMillis()))
+                    new Pair<>("timestamp", new LongField(System.currentTimeMillis())),
+                    new Pair<>("lastProject", new StringField(null)),
+                    new Pair<>("projectHistory", new ListField<StringField>(new ArrayList<>()))
             )),
             new ConfigurationSection("appearance", Dict.make(
                     new Pair<>("theme", new StringField("dark"))
@@ -26,6 +30,9 @@ public class Configuration {
             new ConfigurationSection("logs", Dict.make(
                     new Pair<>("keepErrorsInPane", new IntField(40)),
                     new Pair<>("keepLogsInPane", new IntField(70))
+            )),
+            new ConfigurationSection("projects", Dict.make(
+                    new Pair<>("home", new StringField("projects"))
             ))
     };
 

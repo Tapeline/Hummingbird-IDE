@@ -9,14 +9,14 @@ import me.tapeline.carousellib.icons.CBundledIcon;
 import me.tapeline.hummingbird.ide.configuration.Configuration;
 import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFile;
 import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
-import me.tapeline.hummingbird.ide.expansion.files.ProjectFileType;
+import me.tapeline.hummingbird.ide.expansion.files.standard.ProjectFileType;
+import me.tapeline.hummingbird.ide.expansion.project.standard.empty.EmptyProjectGenerator;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.standard.shellscript.ShellScriptConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;
 import me.tapeline.hummingbird.ide.expansion.themes.standard.darcula.DarculaTheme;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
-import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.frames.splash.SplashScreen;
-import me.tapeline.hummingbird.ide.project.Project;
+import me.tapeline.hummingbird.ide.frames.welcome.WelcomeWindow;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -85,6 +85,8 @@ public class Application {
         Registry.register(new DarculaTheme());
 
         Registry.register(new ShellScriptConfigurationRunner());
+
+        Registry.register(new EmptyProjectGenerator());
     }
 
     public void run() throws Exception {
@@ -116,8 +118,8 @@ public class Application {
         splashScreen.dispose();
 
         logger.info("Startup complete");
-        //WelcomeWindow welcomeWindow = new WelcomeWindow();
-        EditorWindow window = new EditorWindow(new Project(new File("src/test/resources/testProj")));
+        WelcomeWindow welcomeWindow = new WelcomeWindow();
+        //EditorWindow window = new EditorWindow(new Project(new File("src/test/resources/testProj")));
     }
 
     public void addWindow(AppWindow window) {
@@ -138,6 +140,14 @@ public class Application {
 
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    public void saveConfig() {
+        try {
+            getConfiguration().save();
+        } catch (FileReadException e) {
+            Dialogs.exception("Error", "Exception during config saving", e);
+        }
     }
 
 }
