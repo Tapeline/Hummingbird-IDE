@@ -33,6 +33,10 @@ public class Configuration {
             )),
             new ConfigurationSection("projects", Dict.make(
                     new Pair<>("home", new StringField("projects"))
+            )),
+            new ConfigurationSection("plugins", Dict.make(
+                    new Pair<>("home", new StringField("plugins")),
+                    new Pair<>("enabled", new ListField<String>(new ArrayList<>()))
             ))
     };
 
@@ -64,6 +68,14 @@ public class Configuration {
 
     public ConfigurationSection logs() {
         return sections[2];
+    }
+
+    public ConfigurationSection projects() {
+        return sections[3];
+    }
+
+    public ConfigurationSection plugins() {
+        return sections[4];
     }
 
 }

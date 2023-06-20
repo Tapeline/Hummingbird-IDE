@@ -2,6 +2,7 @@ package me.tapeline.hummingbird.ide;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import me.tapeline.carousellib.configuration.exceptions.ConfigurationCorruptedException;
+import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
 import me.tapeline.carousellib.configuration.exceptions.SectionCorruptedException;
 import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.exceptions.FileReadException;
@@ -10,6 +11,7 @@ import me.tapeline.hummingbird.ide.configuration.Configuration;
 import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFile;
 import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
 import me.tapeline.hummingbird.ide.expansion.files.standard.ProjectFileType;
+import me.tapeline.hummingbird.ide.expansion.plugins.AbstractPlugin;
 import me.tapeline.hummingbird.ide.expansion.project.standard.empty.EmptyProjectGenerator;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.standard.shellscript.ShellScriptConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;
@@ -17,9 +19,11 @@ import me.tapeline.hummingbird.ide.expansion.themes.standard.darcula.DarculaThem
 import me.tapeline.hummingbird.ide.frames.AppWindow;
 import me.tapeline.hummingbird.ide.frames.splash.SplashScreen;
 import me.tapeline.hummingbird.ide.frames.welcome.WelcomeWindow;
+import org.pf4j.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ public class Application {
     private final String ideRootPath;
     private final Configuration configuration;
     private final Logger logger;
+    private PluginManager pluginManager;
 
     public Application() throws ConfigurationCorruptedException,
             FileReadException, SectionCorruptedException {
@@ -61,6 +66,11 @@ public class Application {
                 ideRootPath, "config.yml"
         ).toFile());
         instance = this;
+        try {
+            pluginManager = new DefaultPluginManager(
+                    new File(configuration.plugins().getString("home")).toPath()
+            );
+        } catch (FieldNotFoundException e) { e.printStackTrace(); }
     }
 
     public static void execute(String[] args) {
@@ -89,6 +99,59 @@ public class Application {
         Registry.register(new EmptyProjectGenerator());
     }
 
+    public void loadPlugins() {
+        logger.info("Loading plugins");
+        if (pluginManager == null) {
+            logger.severe("Plugin manager appears to be null");
+            return;
+        }
+        List<String> enabled = new ArrayList<>();
+        try {
+            enabled = (List<String>) configuration.plugins().getList("enabled");
+        } catch (FieldNotFoundException e) {
+            e.printStackTrace();
+        }
+        Path pluginRoot = pluginManager.getPluginsRoots().get(0);
+        for (String enabledPlugin : enabled) {
+            logger.info("Trying to load plugin " + enabledPlugin);
+            try {
+                String id = pluginManager.loadPlugin(
+                        Paths.get(pluginRoot.toFile().getAbsolutePath(), enabledPlugin)
+                );
+                PluginState state = pluginManager.startPlugin(id);
+                if (state.equals(PluginState.STARTED)) {
+                    logger.info("Started plugin " + id);
+                    handlePlugin(pluginManager.getPlugin(id));
+                } else
+                    logger.warning("Unable to start plugin " + id + " : " + state);
+            } catch (Exception e) {
+                Dialogs.exception(null, "Error while loading plugin " + enabledPlugin, e);
+            }
+        }
+    }
+
+    private void handlePlugin(PluginWrapper wrapper) {
+        logger.info("Handling plugin " + wrapper.getPluginId());
+        if (wrapper.getPlugin() == null) {
+            logger.warning("Plugin is null. Abort handling");
+            return;
+        }
+        if (!(wrapper.getPlugin() instanceof AbstractPlugin)) {
+            logger.warning("Plugin is not an instance of " +
+                    "me.tapeline.hummingbird.ide.expansion.plugins.AbstractPlugin. Abort handling");
+            return;
+        }
+        AbstractPlugin plugin = ((AbstractPlugin) wrapper.getPlugin());
+        plugin.onLoad(this);
+        if (plugin.getFileTypeProvider() != null)
+            Registry.registerAll(plugin.getFileTypeProvider().providedFileTypes());
+        if (plugin.getSyntaxProvider() != null)
+            Registry.registerAll(plugin.getSyntaxProvider().providedAdapters());
+        if (plugin.getThemeProvider() != null)
+            Registry.registerAll(plugin.getThemeProvider().providedThemes());
+        logger.info("Handling successful");
+    }
+
     public void run() throws Exception {
         logger.info("Starting");
         SplashScreen splashScreen = new SplashScreen(ImageIO.read(
@@ -102,6 +165,7 @@ public class Application {
 
         loadFonts();
         loadCore();
+        loadPlugins();
 
         logger.info("Applying theme");
         AbstractTheme theme = Registry.getTheme(configuration.appearance().getString("theme"));

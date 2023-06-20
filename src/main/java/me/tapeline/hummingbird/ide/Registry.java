@@ -16,6 +16,11 @@ public class Registry {
     public static List<AbstractConfigurationRunner> configurationRunners = new ArrayList<>();
     public static List<AbstractProjectGenerator> projectGenerators = new ArrayList<>();
 
+    public static void registerAll(List<? extends RegistryEntry> objects) {
+        for (RegistryEntry object : objects)
+            register(object);
+    }
+
     public static void register(RegistryEntry object) {
         if (object instanceof AbstractFileType fileType)
             fileTypes.add(0, fileType);

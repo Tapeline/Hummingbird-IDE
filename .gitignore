@@ -1,5 +1,6 @@
-/target/
+target/
 /config.yml
 /logs/
 
 .ide/
+/out/
