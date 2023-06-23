@@ -19,11 +19,13 @@ public class CPlayIcon extends CSquareIcon {
 
         int centerY = getIconHeight() / 2;
 
+        int t = (int) (getIconWidth() * Math.sqrt(0.3));
+
         g.fillPolygon(
                 new int[] {
-                        x,
-                        x + getIconWidth(),
-                        x
+                        t / 3 + x,
+                        x + 2*t,
+                        t / 3 + x
                 },
                 new int[] {
                         y,

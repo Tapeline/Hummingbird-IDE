@@ -7,6 +7,7 @@ import me.tapeline.hummingbird.ide.exceptions.runconfigs.ConfigurationRunExcepti
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfigurationEditorPanel;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.TerminalConfiguration;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -29,9 +30,13 @@ public class ShellScriptConfigurationRunner extends AbstractConfigurationRunner 
     }
 
     @Override
-    public void run(RunConfiguration configuration) throws ConfigurationRunException {
+    public TerminalConfiguration run(RunConfiguration configuration) throws ConfigurationRunException {
         Application.getStaticLogger().info("Running shell configuration: "
                 + configuration.getFields().get("command"));
+        String[] command = ((String) configuration.getFields().get("command")).split("\s");
+        TerminalConfiguration conf = new TerminalConfiguration(command, new HashMap<>());
+        Application.getStaticLogger().info("Created terminal configuration: " + conf);
+        return conf;
     }
 
     @Override

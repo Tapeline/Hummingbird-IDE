@@ -44,7 +44,7 @@ public class RunConfigurationsDialog extends JDialog {
         configurations = new CDynamicList<>();
         Vector<RunConfiguration> listData = new Vector<>();
         for (RunConfiguration configuration : data) listData.add(configuration.clone());
-        configurations.getList().setListData(listData);
+        configurations.setListData(listData);
         configurations.setOnAddCall(list -> {
             RunnerChoiceDialog dialog = new RunnerChoiceDialog();
             AbstractConfigurationRunner choice = dialog.show(Registry.configurationRunners);

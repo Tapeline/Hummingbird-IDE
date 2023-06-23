@@ -142,6 +142,11 @@ public class CDynamicList<E> extends JPanel {
         return listData;
     }
 
+    public void setListData(Vector<E> listData) {
+        this.listData = listData;
+        list.setListData(listData);
+    }
+
     public int getFlags() {
         return flags;
     }

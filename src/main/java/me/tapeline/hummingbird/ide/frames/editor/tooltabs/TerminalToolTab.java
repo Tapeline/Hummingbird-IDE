@@ -28,6 +28,7 @@ public class TerminalToolTab extends JPanel implements AbstractToolTab {
     private HTerminal terminal;
     private TtyConnector connector;
     private CActionBar actionBar;
+    private PtyProcess process;
 
     public TerminalToolTab(EditorWindow editor) {
         super();
@@ -35,16 +36,17 @@ public class TerminalToolTab extends JPanel implements AbstractToolTab {
         this.connector = createTtyConnector();
 
         terminal = new HTerminal(new TerminalSettingsProvider());
-        terminal.setTtyConnector(connector);
-        terminal.start();
+        terminal.getTermWidget().setTtyConnector(connector);
+        terminal.getTermWidget().start();
 
-        terminal.getScrollBar().setUI(new FlatScrollBarUI());
+        terminal.getTermWidget().getScrollBar().setUI(new FlatScrollBarUI());
 
         actionBar = new CActionBar();
         actionBar.addAction(new CHSpacerAction());
         setLayout(new BorderLayout());
         add(actionBar, BorderLayout.PAGE_START);
         add(terminal, BorderLayout.CENTER);
+
     }
 
     public TtyConnector createTtyConnector() {
@@ -58,11 +60,15 @@ public class TerminalToolTab extends JPanel implements AbstractToolTab {
                 envs = new HashMap<>(System.getenv());
                 envs.put("TERM", "xterm-256color");
             }
-            PtyProcess process = new PtyProcessBuilder().setCommand(command).setEnvironment(envs).start();
+            process = new PtyProcessBuilder().setCommand(command).setEnvironment(envs).start();
             return new PtyProcessTtyConnector(process, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public void stop() {
+        terminal.stopAndClose(process);
     }
 
     @Override
@@ -86,7 +92,7 @@ public class TerminalToolTab extends JPanel implements AbstractToolTab {
     }
 
     public JediTermWidget getTerminal() {
-        return terminal;
+        return terminal.getTermWidget();
     }
 
     public TtyConnector getConnector() {
