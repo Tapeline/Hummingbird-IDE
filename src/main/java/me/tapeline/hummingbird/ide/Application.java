@@ -39,6 +39,8 @@ public class Application {
     public static Application instance;
 
     public static Logger getStaticLogger() {
+        if (instance == null)
+            return null;
         return instance.logger;
     }
 

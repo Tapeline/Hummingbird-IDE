@@ -19,7 +19,8 @@ public class ExceptionDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        Application.getStaticLogger().log(Level.SEVERE, message, exception);
+        if (Application.getStaticLogger() != null)
+            Application.getStaticLogger().log(Level.SEVERE, message, exception);
 
         setTitle(title);
 
