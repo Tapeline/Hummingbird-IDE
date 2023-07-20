@@ -40,9 +40,13 @@ public class Application {
 
     public static Application instance;
 
+    private static Logger tempLogger;
+
     public static Logger getStaticLogger() {
+        if (instance == null && tempLogger == null)
+            tempLogger = createAppLogger();
         if (instance == null)
-            return null;
+            return tempLogger;
         return instance.logger;
     }
 
@@ -52,9 +56,8 @@ public class Application {
     private final Logger logger;
     private PluginManager pluginManager;
 
-    public Application() throws ConfigurationCorruptedException,
-            FileReadException, SectionCorruptedException {
-        logger = Logger.getLogger("Application");
+    private static Logger createAppLogger() {
+        Logger logger = Logger.getLogger("Application");
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yy_HH-mm-ss");
         try {
             new File("logs").mkdirs();
@@ -65,6 +68,12 @@ public class Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return logger;
+    }
+
+    public Application() throws ConfigurationCorruptedException,
+            FileReadException, SectionCorruptedException {
+        logger = createAppLogger();
         ideRootPath = new File("").getAbsolutePath();
         configuration = new Configuration(Paths.get(
                 ideRootPath, "config.yml"
