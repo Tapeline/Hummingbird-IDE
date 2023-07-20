@@ -22,6 +22,8 @@ import me.tapeline.hummingbird.ide.frames.welcome.WelcomeWindow;
 import org.pf4j.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,6 +73,7 @@ public class Application {
                     new File(configuration.plugins().getString("home")).toPath()
             );
         } catch (FieldNotFoundException e) { e.printStackTrace(); }
+        Dialogs.logger = logger;
     }
 
     public static void execute(String[] args) {
@@ -175,6 +178,13 @@ public class Application {
             theme = new DarculaTheme();
         }
         theme.onApply();
+        Font font = new Font("SansSerif", Font.PLAIN, 12);
+        try {
+            String family = Application.instance.getConfiguration().appearance().getString("font");
+            int size = Application.instance.getConfiguration().appearance().getInt("fontSize");
+            font = new Font(family, Font.PLAIN, size);
+        } catch (FieldNotFoundException ignored) {}
+        setGlobalUIFont(font);
         CBundledIcon.darkMode = theme.isDark();
         Registry.currentTheme = theme;
 
@@ -213,6 +223,41 @@ public class Application {
         } catch (FileReadException e) {
             Dialogs.exception("Error", "Exception during config saving", e);
         }
+    }
+
+    public void setGlobalUIFont(Font font) {
+        UIManager.put("Button.font", font);
+        UIManager.put("CheckBox.font", font);
+        UIManager.put("CheckBoxMenuItem.font", font);
+        UIManager.put("ColorChooser.font", font);
+        UIManager.put("ComboBox.font", font);
+        UIManager.put("DesktopIcon.font", font);
+        UIManager.put("FormattedTextField.font", font);
+        UIManager.put("Label.font", font);
+        UIManager.put("List.font", font);
+        UIManager.put("Menu.font", font);
+        UIManager.put("MenuBar.font", font);
+        UIManager.put("MenuItem.font", font);
+        UIManager.put("OptionPane.font", font);
+        UIManager.put("Panel.font", font);
+        UIManager.put("PasswordField.font", font);
+        UIManager.put("PopupMenu.font", font);
+        UIManager.put("ProgressBar.font", font);
+        UIManager.put("RadioButton.font", font);
+        UIManager.put("RadioButtonMenuItem.font", font);
+        UIManager.put("ScrollPane.font", font);
+        UIManager.put("Slider.font", font);
+        UIManager.put("Spinner.font", font);
+        UIManager.put("TabbedPane.font", font);
+        UIManager.put("Table.font", font);
+        UIManager.put("TableHeader.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("TitledBorder.font", font);
+        UIManager.put("ToggleButton.font", font);
+        UIManager.put("ToolBar.font", font);
+        UIManager.put("ToolTip.font", font);
+        UIManager.put("Tree.font", font);
+        UIManager.put("Viewport.font", font);
     }
 
 }

@@ -1,9 +1,15 @@
 package me.tapeline.hummingbird.ide;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import me.tapeline.carousellib.elements.verticaltoggle.CVerticalToggleButton;
+import me.tapeline.hummingbird.ide.tooltabs.git.ui.changestree.CheckBoxNodeData;
+import me.tapeline.hummingbird.ide.tooltabs.git.ui.changestree.CheckBoxNodeEditor;
+import me.tapeline.hummingbird.ide.tooltabs.git.ui.changestree.CheckBoxNodeRenderer;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,20 +38,47 @@ public class Test {
         frame.setVisible(true);
     }
 
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         List<String> colors = new ArrayList<>();
         for (Map.Entry<Object, Object> entry : UIManager.getDefaults().entrySet()) {
-            if (entry.getValue() instanceof Border) {
+            /*if (entry.getValue() instanceof FontUIResource) {
                 colors.add((String) entry.getKey()); // all the keys are strings
-            }
+            }*/
+            if (entry.getKey().toString().contains("font"))
+                colors.add(entry.getKey().toString());
         }
         Collections.sort(colors);
         for (String name : colors)
             System.out.println(name);
     }
 
-    public static void main(String[] args) {
+    public static void main3(String[] args) {
+        FlatDarculaLaf.setup();
+        JFrame frame = new JFrame("Test");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(
+                new CheckBoxNodeData("root", false));
+        DefaultMutableTreeNode e1 = new DefaultMutableTreeNode(
+                new CheckBoxNodeData("e1", false));
+        DefaultMutableTreeNode e2 = new DefaultMutableTreeNode(
+                new CheckBoxNodeData("e2", false));
+        DefaultMutableTreeNode e3 = new DefaultMutableTreeNode(
+                new CheckBoxNodeData("e3", false));
+        DefaultMutableTreeNode e4 = new DefaultMutableTreeNode(
+                new CheckBoxNodeData("e4", false));
+        e2.add(e3);
+        e2.add(e4);
+        root.add(e1);
+        root.add(e2);
 
+        JTree tree = new JTree(root);
+        tree.setEditable(true);
+        tree.setCellEditor(new CheckBoxNodeEditor(tree));
+        tree.setCellRenderer(new CheckBoxNodeRenderer());
+        frame.setContentPane(new JScrollPane(tree));
+
+        frame.setSize(400, 400);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     /*

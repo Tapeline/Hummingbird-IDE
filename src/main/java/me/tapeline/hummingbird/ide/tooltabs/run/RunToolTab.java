@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.run;
 
 import me.tapeline.carousellib.elements.actionbar.CActionBar;
 import me.tapeline.carousellib.elements.actionbar.CButtonAction;
@@ -9,6 +9,7 @@ import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRun
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.TerminalConfiguration;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
+import me.tapeline.hummingbird.ide.tooltabs.run.ui.RunTaskTab;
 import me.tapeline.hummingbird.ide.ui.tooltabs.AbstractToolTab;
 
 import javax.swing.*;

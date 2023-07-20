@@ -18,7 +18,12 @@ import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRun
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.TerminalConfiguration;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
-import me.tapeline.hummingbird.ide.frames.editor.tooltabs.*;
+import me.tapeline.hummingbird.ide.tooltabs.events.EventsToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.git.GitToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.project.ProjectToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.run.RunToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.terminal.TerminalToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.todo.TodoToolTab;
 import me.tapeline.hummingbird.ide.frames.runconfigs.RunConfigurationsDialog;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.filetree.HFileTree;
@@ -64,6 +69,7 @@ public class EditorWindow extends AppWindow {
     private EventsToolTab eventsToolTab;
     private TerminalToolTab terminalToolTab;
     private RunToolTab runToolTab;
+    private GitToolTab gitToolTab;
     private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
     private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
     private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
@@ -122,6 +128,7 @@ public class EditorWindow extends AppWindow {
         addBottomToolTab(todoToolTab);
         addBottomToolTab(terminalToolTab);
         addBottomToolTab(runToolTab);
+        addBottomToolTab(gitToolTab);
 
         leftStatus.setText("Ready");
         rightStatus.setText("|/ master");
@@ -166,6 +173,7 @@ public class EditorWindow extends AppWindow {
         eventsToolTab = new EventsToolTab(this);
         terminalToolTab = new TerminalToolTab(this);
         runToolTab = new RunToolTab(this);
+        gitToolTab = new GitToolTab(this);
 
         runConfigurationStartButton.setIcon(new CPlayIcon(16));
         runConfigurationStartButton.addActionListener(e -> {
@@ -281,6 +289,10 @@ public class EditorWindow extends AppWindow {
 
     public StudioPanel getStudioPanel() {
         return studioPanel;
+    }
+
+    public Project getProject() {
+        return project;
     }
 
 }

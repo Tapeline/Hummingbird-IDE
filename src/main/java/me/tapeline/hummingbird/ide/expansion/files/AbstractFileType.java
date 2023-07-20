@@ -1,5 +1,6 @@
 package me.tapeline.hummingbird.ide.expansion.files;
 
+import me.tapeline.hummingbird.ide.Registry;
 import me.tapeline.hummingbird.ide.expansion.RegistryEntry;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.project.Project;
@@ -19,7 +20,18 @@ public abstract class AbstractFileType implements RegistryEntry {
 
     public void customOpen(EditorWindow editor, File file) {}
 
-    public abstract void setupContextMenu(EditorWindow editor, JPopupMenu menu,
-                                          File contextFile, Project contextProject);
+    public void setupContextMenu(EditorWindow editor, JPopupMenu menu,
+                                 File contextFile, Project contextProject) {
+        setupFileContextMenu(editor, menu, contextFile, contextProject);
+        for (AbstractContextMenuExpansion expansion :
+                Registry.getApplicableExpansions(this))
+            expansion.setupContextMenu(this, editor, menu,
+                    contextFile, contextProject);
+    }
+
+    public abstract void setupFileContextMenu(EditorWindow editor,
+                                              JPopupMenu menu,
+                                              File contextFile,
+                                              Project contextProject);
 
 }

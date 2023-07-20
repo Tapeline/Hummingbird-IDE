@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.terminal.data;
 
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;

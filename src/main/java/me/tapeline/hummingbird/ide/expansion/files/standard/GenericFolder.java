@@ -39,8 +39,8 @@ public class GenericFolder extends AbstractFileType {
     }
 
     @Override
-    public void setupContextMenu(EditorWindow editor, JPopupMenu menu,
-                                 File contextFile, Project contextProject) {
+    public void setupFileContextMenu(EditorWindow editor, JPopupMenu menu,
+                                     File contextFile, Project contextProject) {
         menu.add(new ItemCreateNewText(editor, editor.getFileTree(), contextFile));
         menu.add(new ItemCreateNewFolder(editor, editor.getFileTree(), contextFile));
         menu.add(new ItemDelete(editor.getFileTree(), contextFile));

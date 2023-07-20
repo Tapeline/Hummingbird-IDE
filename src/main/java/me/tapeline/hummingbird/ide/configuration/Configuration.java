@@ -25,7 +25,9 @@ public class Configuration {
                     new Pair<>("projectHistory", new ListField<StringField>(new ArrayList<>()))
             )),
             new ConfigurationSection("appearance", Dict.make(
-                    new Pair<>("theme", new StringField("dark"))
+                    new Pair<>("theme", new StringField("dark")),
+                    new Pair<>("fontSize", new IntField(12)),
+                    new Pair<>("font", new StringField("SansSerif"))
             )),
             new ConfigurationSection("logs", Dict.make(
                     new Pair<>("keepErrorsInPane", new IntField(40)),

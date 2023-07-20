@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.run.ui;
 
 import com.formdev.flatlaf.ui.FlatScrollBarUI;
 import com.jediterm.pty.PtyProcessTtyConnector;
@@ -12,6 +12,8 @@ import me.tapeline.carousellib.icons.commonactions.CPlayIcon;
 import me.tapeline.carousellib.icons.commonactions.CStopIcon;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
+import me.tapeline.hummingbird.ide.tooltabs.terminal.data.TerminalSettingsProvider;
+import me.tapeline.hummingbird.ide.tooltabs.run.RunToolTab;
 import me.tapeline.hummingbird.ide.ui.terminal.HTerminal;
 
 import javax.swing.*;

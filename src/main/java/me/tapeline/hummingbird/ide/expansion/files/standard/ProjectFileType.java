@@ -2,7 +2,6 @@ package me.tapeline.hummingbird.ide.expansion.files.standard;
 
 import me.tapeline.carousellib.icons.items.CColorFolderIcon;
 import me.tapeline.carousellib.utils.AdaptableColor;
-import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.menus.context.ItemDelete;
@@ -55,9 +54,9 @@ public class ProjectFileType extends GenericFolder {
     }
 
     @Override
-    public void setupContextMenu(EditorWindow editor, JPopupMenu menu,
-                                 File contextFile, Project contextProject) {
-        super.setupContextMenu(editor, menu, contextFile, contextProject);
+    public void setupFileContextMenu(EditorWindow editor, JPopupMenu menu,
+                                     File contextFile, Project contextProject) {
+        super.setupFileContextMenu(editor, menu, contextFile, contextProject);
         for (Component c : menu.getComponents())
             if (c instanceof ItemDelete)
                 menu.remove(c);

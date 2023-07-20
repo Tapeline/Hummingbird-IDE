@@ -1,6 +1,5 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.terminal;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.ui.FlatScrollBarUI;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
@@ -13,6 +12,7 @@ import me.tapeline.carousellib.elements.actionbar.CButtonAction;
 import me.tapeline.carousellib.elements.actionbar.CHSpacerAction;
 import me.tapeline.carousellib.icons.items.CShellIcon;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
+import me.tapeline.hummingbird.ide.tooltabs.terminal.data.TerminalSettingsProvider;
 import me.tapeline.hummingbird.ide.ui.terminal.HTerminal;
 import me.tapeline.hummingbird.ide.ui.tooltabs.AbstractToolTab;
 

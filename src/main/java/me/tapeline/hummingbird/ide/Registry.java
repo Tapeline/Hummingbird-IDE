@@ -1,6 +1,7 @@
 package me.tapeline.hummingbird.ide;
 
 import me.tapeline.hummingbird.ide.expansion.RegistryEntry;
+import me.tapeline.hummingbird.ide.expansion.files.AbstractContextMenuExpansion;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
 import me.tapeline.hummingbird.ide.expansion.project.AbstractProjectGenerator;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
@@ -13,8 +14,11 @@ public class Registry {
 
     public static List<AbstractTheme> themes = new ArrayList<>();
     public static List<AbstractFileType> fileTypes = new ArrayList<>();
-    public static List<AbstractConfigurationRunner> configurationRunners = new ArrayList<>();
+    public static List<AbstractConfigurationRunner> configurationRunners
+            = new ArrayList<>();
     public static List<AbstractProjectGenerator> projectGenerators = new ArrayList<>();
+    public static List<AbstractContextMenuExpansion> contextMenuExpansions
+            = new ArrayList<>();
 
     public static AbstractTheme currentTheme = null;
 
@@ -32,6 +36,8 @@ public class Registry {
             configurationRunners.add(0, runner);
         else if (object instanceof AbstractProjectGenerator generator)
             projectGenerators.add(generator);
+        else if (object instanceof AbstractContextMenuExpansion expansion)
+            contextMenuExpansions.add(expansion);
     }
 
     public static AbstractTheme getTheme(String id) {
@@ -60,6 +66,23 @@ public class Registry {
             if (generator.id().equals(id))
                 return generator;
         return null;
+    }
+
+    public static AbstractContextMenuExpansion getMenuExpansion(String id) {
+        for (AbstractContextMenuExpansion expansion : contextMenuExpansions)
+            if (expansion.id().equals(id))
+                return expansion;
+        return null;
+    }
+
+    public static List<AbstractContextMenuExpansion> getApplicableExpansions(
+            AbstractFileType fileType) {
+        List<AbstractContextMenuExpansion> result = new ArrayList<>();
+        for (AbstractContextMenuExpansion expansion : contextMenuExpansions) {
+            if (expansion.getApplicableTypes().contains(fileType.getClass()))
+                result.add(expansion);
+        }
+        return result;
     }
 
 }
