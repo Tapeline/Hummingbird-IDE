@@ -6,15 +6,23 @@ import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.FS;
 import me.tapeline.hummingbird.ide.Registry;
+import me.tapeline.hummingbird.ide.expansion.syntax.CompletionSuggestion;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
+import me.tapeline.hummingbird.ide.ui.autocompletion.AutocompletionPanel;
 import me.tapeline.hummingbird.ide.ui.syntaxtextarea.HSyntaxTextArea;
+import me.tapeline.hummingbird.ide.utils.Bounds;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
 import javax.swing.text.Segment;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
 
@@ -51,6 +59,24 @@ public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
         } catch (FieldNotFoundException ignored) { }
         textArea.setTabSize(tabSize);
         textArea.setTabsEmulated(true);
+        textArea.setAutoIndentEnabled(true);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke("ctrl SPACE");
+        textArea.getInputMap().put(keyStroke, "manualAutocompletionRequest");
+        textArea.getActionMap().put("manualAutocompletionRequest", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int x = textArea.getCaret().getMagicCaretPosition().x;
+                int y = textArea.getCaret().getMagicCaretPosition().y;
+                AutocompletionPanel panel = new AutocompletionPanel(textArea, Arrays.asList(
+                        new CompletionSuggestion(null, "Test", "com.test", 1,
+                                new Bounds(0, 1))
+                ));
+                Point location = textArea.getLocation();
+                SwingUtilities.convertPointToScreen(location, textArea);
+                panel.setLocation(((int) location.getX()) + x + 20, ((int) location.getY()) + y + 20);
+                panel.setVisible(true);
+            }
+        });
 
         Font font = new Font("Consolas", Font.PLAIN, 16);
         try {
@@ -250,6 +276,7 @@ public class DefaultCodeEditorTab extends AbstractWorkspaceTab {
         String text = FS.readFile(file);
         textArea.setText(text);
         previouslySavedText = text;
+        textArea.initArea(editor, this, editor.getProject(), file);
     }
 
     @Override

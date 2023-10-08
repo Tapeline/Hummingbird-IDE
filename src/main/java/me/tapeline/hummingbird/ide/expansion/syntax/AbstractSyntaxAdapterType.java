@@ -7,7 +7,6 @@ import java.io.File;
 
 public abstract class AbstractSyntaxAdapterType implements RegistryEntry {
 
-    public abstract boolean appliesForProject(Project project);
     public abstract boolean appliesForFile(Project project, File file);
     public abstract AbstractSyntaxAdapter constructAdapter(Project project);
 

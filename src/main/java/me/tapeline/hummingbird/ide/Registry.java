@@ -5,6 +5,7 @@ import me.tapeline.hummingbird.ide.expansion.files.AbstractContextMenuExpansion;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
 import me.tapeline.hummingbird.ide.expansion.project.AbstractProjectGenerator;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
+import me.tapeline.hummingbird.ide.expansion.syntax.AbstractSyntaxAdapterType;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Registry {
     public static List<AbstractProjectGenerator> projectGenerators = new ArrayList<>();
     public static List<AbstractContextMenuExpansion> contextMenuExpansions
             = new ArrayList<>();
+    public static List<AbstractSyntaxAdapterType> syntaxAdapterTypes = new ArrayList<>();
 
     public static AbstractTheme currentTheme = null;
 
@@ -38,6 +40,8 @@ public class Registry {
             projectGenerators.add(generator);
         else if (object instanceof AbstractContextMenuExpansion expansion)
             contextMenuExpansions.add(expansion);
+        else if (object instanceof AbstractSyntaxAdapterType syntaxAdapterType)
+            syntaxAdapterTypes.add(syntaxAdapterType);
     }
 
     public static AbstractTheme getTheme(String id) {

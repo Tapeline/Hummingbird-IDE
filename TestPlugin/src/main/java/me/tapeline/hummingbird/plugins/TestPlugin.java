@@ -2,10 +2,13 @@ package me.tapeline.hummingbird.plugins;
 
 import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.expansion.plugins.*;
+import me.tapeline.hummingbird.ide.expansion.syntax.AbstractSyntaxAdapter;
+import me.tapeline.hummingbird.ide.expansion.syntax.AbstractSyntaxAdapterType;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 
 public class TestPlugin extends AbstractPlugin {
 
@@ -36,7 +39,7 @@ public class TestPlugin extends AbstractPlugin {
 
     @Override
     public @Nullable PluginSyntaxProvider getSyntaxProvider() {
-        return null;
+        return () -> Collections.singletonList(new QuailSyntaxType());
     }
 
     @Override
