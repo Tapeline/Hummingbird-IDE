@@ -45,10 +45,7 @@ public class StudioPanel extends JPanel {
                     JSplitTools.getProportionalDividerLocation(topBottomSplitter));
             topBottomSplitter.setBottomComponent(null);
         });
-        bottomTabs.getTabChangeListeners().add(event -> {
-            topBottomSplitter.setBottomComponent(bottomTabs.getDisplay());
-            topBottomSplitter.setDividerLocation(dividerPositions.getTopBottomPercent());
-        });
+        bottomTabs.getTabChangeListeners().add(event -> showBottom());
 
         leftTabs.getTabsHideListeners().add(event -> {
             dividerPositions.setHorizontalLeftPercent(
@@ -101,6 +98,12 @@ public class StudioPanel extends JPanel {
 
     public HSlotPanel getRightTabs() {
         return rightTabs;
+    }
+
+    public void showBottom() {
+        dividerPositions.setBottomHidden(false);
+        topBottomSplitter.setBottomComponent(bottomTabs.getDisplay());
+        topBottomSplitter.setDividerLocation(dividerPositions.getTopBottomPercent());
     }
 
 }

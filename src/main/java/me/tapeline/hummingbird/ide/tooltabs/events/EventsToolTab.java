@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.events;
 
 import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
 import me.tapeline.carousellib.elements.card.CCard;

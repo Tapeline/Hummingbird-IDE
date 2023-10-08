@@ -10,7 +10,7 @@ public abstract class AbstractConfigurationRunner implements RegistryEntry {
 
     public abstract Icon icon();
     public abstract String name();
-    public abstract void run(RunConfiguration configuration) throws ConfigurationRunException;
+    public abstract TerminalConfiguration run(RunConfiguration configuration) throws ConfigurationRunException;
 
     public abstract RunConfigurationEditorPanel constructConfigurationEditor(RunConfiguration configuration);
     public abstract RunConfiguration getBlankConfiguration();

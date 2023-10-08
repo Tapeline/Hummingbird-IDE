@@ -26,20 +26,20 @@ public class CDynamicList<E> extends JPanel {
     public static String confirmTitle = "Clearing list";
     public static String confirmMessage = "Are you sure you want to clear elements?";
 
-    private CActionBar actionBar;
-    private JList<E> list;
-    private Vector<E> listData;
-    private int flags;
-    private JScrollPane scrollPane;
+    protected CActionBar actionBar;
+    protected JList<E> list;
+    protected Vector<E> listData;
+    protected int flags;
+    protected JScrollPane scrollPane;
 
-    private CButtonAction addAction;
-    private CButtonAction removeAction;
-    private CButtonAction clearAction;
-    private CButtonAction upAction;
-    private CButtonAction downAction;
+    protected CButtonAction addAction;
+    protected CButtonAction removeAction;
+    protected CButtonAction clearAction;
+    protected CButtonAction upAction;
+    protected CButtonAction downAction;
 
-    private Function<CDynamicList<E>, E> onAddCall;
-    private Function<E, Boolean> onRemoveCall;
+    protected Function<CDynamicList<E>, E> onAddCall;
+    protected Function<E, Boolean> onRemoveCall;
 
     public CDynamicList() {
         this(DEFAULT);
@@ -73,7 +73,7 @@ public class CDynamicList<E> extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void onAdd(CAbstractAction action, JComponent component) {
+    protected void onAdd(CAbstractAction action, JComponent component) {
         E result = onAddCall.apply(this);
         if (result != null)
             listData.add(result);
@@ -81,7 +81,7 @@ public class CDynamicList<E> extends JPanel {
         list.updateUI();
     }
 
-    private void onRemove(CAbstractAction action, JComponent component) {
+    protected void onRemove(CAbstractAction action, JComponent component) {
         if (list.getSelectedValue() != null) {
             Boolean result = onRemoveCall.apply(list.getSelectedValue());
             if (result)
@@ -91,7 +91,7 @@ public class CDynamicList<E> extends JPanel {
         }
     }
 
-    private void onClear(CAbstractAction action, JComponent component) {
+    protected void onClear(CAbstractAction action, JComponent component) {
         if (hasFlag(flags, ASK_ON_CLEAR))
             if (!Dialogs.confirmYesNo(this, confirmTitle, confirmMessage))
                 return;
@@ -104,7 +104,7 @@ public class CDynamicList<E> extends JPanel {
         list.updateUI();
     }
 
-    private void onUp(CAbstractAction action, JComponent component) {
+    protected void onUp(CAbstractAction action, JComponent component) {
         if (list.getSelectedValue() != null) {
             if (list.getSelectedIndex() > 0) {
                 int index = list.getSelectedIndex();
@@ -117,7 +117,7 @@ public class CDynamicList<E> extends JPanel {
         }
     }
 
-    private void onDown(CAbstractAction action, JComponent component) {
+    protected void onDown(CAbstractAction action, JComponent component) {
         if (list.getSelectedValue() != null) {
             if (list.getSelectedIndex() + 1 < listData.size()) {
                 int index = list.getSelectedIndex();
@@ -140,6 +140,11 @@ public class CDynamicList<E> extends JPanel {
 
     public Vector<E> getListData() {
         return listData;
+    }
+
+    public void setListData(Vector<E> listData) {
+        this.listData = listData;
+        list.setListData(listData);
     }
 
     public int getFlags() {

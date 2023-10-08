@@ -37,7 +37,7 @@ public class CLinkPanel extends CActionBar {
             final int finalI = i;
             link.addLinkListener(e -> {
                 for (LinkPanelActionListener listener : listeners)
-                    listener.action(new LinkPanelActionEvent(link, finalI));
+                    listener.action(new LinkPanelActionEvent(link, CLinkPanel.this, finalI));
             });
             add(link);
         }

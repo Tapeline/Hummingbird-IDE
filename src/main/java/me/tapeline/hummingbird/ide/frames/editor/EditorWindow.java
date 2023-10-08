@@ -1,6 +1,7 @@
 package me.tapeline.hummingbird.ide.frames.editor;
 
 import me.tapeline.carousellib.configuration.exceptions.FieldNotFoundException;
+import me.tapeline.carousellib.dialogs.Dialogs;
 import me.tapeline.carousellib.elements.closabletabs.CClosableTabbedPane;
 import me.tapeline.carousellib.elements.actionbar.CActionBar;
 import me.tapeline.carousellib.elements.crumbdisplay.CCrumbDisplay;
@@ -9,14 +10,20 @@ import me.tapeline.carousellib.icons.commonactions.CPlayIcon;
 import me.tapeline.carousellib.icons.commonactions.CStopIcon;
 import me.tapeline.hummingbird.ide.Application;
 import me.tapeline.hummingbird.ide.FS;
+import me.tapeline.hummingbird.ide.Registry;
 import me.tapeline.hummingbird.ide.exceptions.ProjectDirectoryException;
+import me.tapeline.hummingbird.ide.exceptions.runconfigs.ConfigurationRunException;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.RunConfiguration;
+import me.tapeline.hummingbird.ide.expansion.runconfigs.TerminalConfiguration;
 import me.tapeline.hummingbird.ide.frames.AppWindow;
-import me.tapeline.hummingbird.ide.frames.Dialogs;
-import me.tapeline.hummingbird.ide.frames.editor.tooltabs.EventsToolTab;
-import me.tapeline.hummingbird.ide.frames.editor.tooltabs.ProjectToolTab;
-import me.tapeline.hummingbird.ide.frames.editor.tooltabs.TodoToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.events.EventsToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.git.GitToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.project.ProjectToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.run.RunToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.terminal.TerminalToolTab;
+import me.tapeline.hummingbird.ide.tooltabs.todo.TodoToolTab;
 import me.tapeline.hummingbird.ide.frames.runconfigs.RunConfigurationsDialog;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.filetree.HFileTree;
@@ -54,7 +61,7 @@ public class EditorWindow extends AppWindow {
     private JPanel upperActionBarContainer;
     private JPanel centralContainer;
     private JPanel pathCrumbContainer;
-    private JComboBox<Object> runConfigurationBox;
+    private JComboBox<RunConfiguration> runConfigurationBox;
     private JButton runConfigurationStartButton;
     private JButton runConfigurationStopButton;
     private JButton runConfigurationEditButton;
@@ -66,6 +73,9 @@ public class EditorWindow extends AppWindow {
     private ProjectToolTab projectToolTab;
     private TodoToolTab todoToolTab;
     private EventsToolTab eventsToolTab;
+    private TerminalToolTab terminalToolTab;
+    private RunToolTab runToolTab;
+    private GitToolTab gitToolTab;
     private List<AbstractToolTab> bottomToolTabs = new ArrayList<>();
     private List<AbstractToolTab> leftToolTabs = new ArrayList<>();
     private List<AbstractToolTab> rightToolTabs = new ArrayList<>();
@@ -75,9 +85,25 @@ public class EditorWindow extends AppWindow {
 
     public EditorWindow(Project project) throws ProjectDirectoryException {
         super("Hummingbird - " + project.getRoot().getName());
-        //super("Hummingbird - ");
         this.project = project;
         logger = Application.instance.getLogger();
+
+        try {
+            List<String> lastProjects = (List<String>) Application.instance.getConfiguration()
+                    .latestRun().getList("projectHistory");
+            boolean contains = false;
+            for (String projectPathString : lastProjects)
+                if (new File(projectPathString).getAbsoluteFile().equals(project.getRoot().getAbsoluteFile())) {
+                    contains = true;
+                    break;
+                }
+            if (!contains) {
+                lastProjects.add(project.getRoot().getAbsolutePath());
+                Application.instance.getConfiguration().latestRun().set("projectHistory", lastProjects);
+            }
+        } catch (FieldNotFoundException e) {
+            Dialogs.exception("Error", "Error logging opened project", e);
+        }
 
         setupUI();
 
@@ -89,11 +115,15 @@ public class EditorWindow extends AppWindow {
                         "Do you really want to exit?");
                 if (!exit) return;
                 try {
+                    terminalToolTab.stop();
+                    runToolTab.stopAll();
                     project.save();
                 } catch (ProjectDirectoryException e) {
                     logger.log(Level.SEVERE, "Exception while exiting", e);
                 }
+                Application.instance.saveConfig();
                 dispose();
+                Thread.getAllStackTraces().keySet().forEach((t) -> System.out.println(t.getName() + "\nIs Daemon " + t.isDaemon() + "\nIs Alive " + t.isAlive() + "\n"));
             }
         });
 
@@ -101,8 +131,11 @@ public class EditorWindow extends AppWindow {
         setPathCrumbFile(null);
 
         addLeftToolTab(projectToolTab);
-        addBottomToolTab(todoToolTab);
         addRightToolTab(eventsToolTab);
+        addBottomToolTab(todoToolTab);
+        addBottomToolTab(terminalToolTab);
+        addBottomToolTab(runToolTab);
+        addBottomToolTab(gitToolTab);
 
         leftStatus.setText("Ready");
         logger.addHandler(new Handler() {
@@ -151,8 +184,38 @@ public class EditorWindow extends AppWindow {
         projectToolTab = new ProjectToolTab(this);
         todoToolTab = new TodoToolTab(this);
         eventsToolTab = new EventsToolTab(this);
+        terminalToolTab = new TerminalToolTab(this);
+        runToolTab = new RunToolTab(this);
+        gitToolTab = new GitToolTab(this);
 
         runConfigurationStartButton.setIcon(new CPlayIcon(16));
+        runConfigurationStartButton.addActionListener(e -> {
+            if (runConfigurationBox.getSelectedItem() == null) return;
+            RunConfiguration configuration = (RunConfiguration) runConfigurationBox.getSelectedItem();
+            AbstractConfigurationRunner runner =
+                    Registry.getConfigurationRunner(configuration.getRunner());
+            if (runner == null) {
+                Dialogs.error(EditorWindow.this, "Error",
+                        "Unknown configuration runner " + configuration.getRunner());
+                return;
+            }
+            TerminalConfiguration terminalConfiguration;
+            try {
+                terminalConfiguration = runner.run(configuration);
+            } catch (ConfigurationRunException exception) {
+                Dialogs.exception(
+                        "Error",
+                        "Error while running configuration " + configuration.getName(),
+                        exception
+                );
+                return;
+            }
+            runToolTab.createTask(terminalConfiguration, configuration, runner);
+            if (studioPanel.getDividerPositions().isBottomHidden()) {
+                studioPanel.getBottomTabs().manuallyChange(2);
+                studioPanel.showBottom();
+            }
+        });
         runConfigurationStopButton.setIcon(new CStopIcon(16));
         runConfigurationBox.setRenderer(new RunConfigurationListRenderer());
         runConfigurationEditButton.addActionListener(e -> {
@@ -265,6 +328,10 @@ public class EditorWindow extends AppWindow {
 
     public StudioPanel getStudioPanel() {
         return studioPanel;
+    }
+
+    public Project getProject() {
+        return project;
     }
 
 }

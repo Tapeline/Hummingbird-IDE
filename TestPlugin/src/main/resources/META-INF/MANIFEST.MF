@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Archiver-Version: None
+Created-By: Tapeline
+Built-By: Tapeline
+Build-Jdk: 1.17.0_17
+Plugin-Class: me.tapeline.hummingbird.plugins.TestPlugin
+Plugin-Id: testplugin
+Plugin-Provider: Tapeline
+Plugin-Version: 1.0

@@ -35,7 +35,7 @@ public abstract class CBundledIcon implements Icon {
     private boolean antialiasingEnabled;
     
     public static boolean darkMode = true;
-    public static boolean antialiasingByDefault = false;
+    public static boolean antialiasingByDefault = true;
 
     public CBundledIcon() {
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);

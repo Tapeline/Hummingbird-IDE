@@ -1,5 +1,7 @@
-/target/
+target/
 /config.yml
 /logs/
 
 .ide/
+/out/
+/cloc.exe

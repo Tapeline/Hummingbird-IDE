@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.todo;
 
 import me.tapeline.carousellib.elements.dynamiclist.CDynamicList;
 import me.tapeline.carousellib.icons.navigation.CMenuIcon;

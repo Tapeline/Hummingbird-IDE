@@ -1,8 +1,7 @@
-package me.tapeline.hummingbird.ide.expansion.files;
+package me.tapeline.hummingbird.ide.expansion.files.standard;
 
 import me.tapeline.carousellib.icons.items.CColorFolderIcon;
 import me.tapeline.carousellib.utils.AdaptableColor;
-import me.tapeline.hummingbird.ide.expansion.files.standard.GenericFolder;
 import me.tapeline.hummingbird.ide.frames.editor.EditorWindow;
 import me.tapeline.hummingbird.ide.project.Project;
 import me.tapeline.hummingbird.ide.ui.menus.context.ItemDelete;
@@ -12,6 +11,13 @@ import java.awt.*;
 import java.io.File;
 
 public class ProjectFileType extends GenericFolder {
+
+    private static Icon cachedIcon;
+    public static Icon getIcon() {
+        if (cachedIcon == null)
+            cachedIcon = new ProjectFileType().icon();
+        return cachedIcon;
+    }
 
     @Override
     public String id() {
@@ -35,11 +41,6 @@ public class ProjectFileType extends GenericFolder {
     }
 
     @Override
-    public boolean doCustomOpen() {
-        return false;
-    }
-
-    @Override
     public boolean applies(File file) {
         if (!file.isDirectory())
             return false;
@@ -53,9 +54,9 @@ public class ProjectFileType extends GenericFolder {
     }
 
     @Override
-    public void setupContextMenu(EditorWindow editor, JPopupMenu menu,
-                                 File contextFile, Project contextProject) {
-        super.setupContextMenu(editor, menu, contextFile, contextProject);
+    public void setupFileContextMenu(EditorWindow editor, JPopupMenu menu,
+                                     File contextFile, Project contextProject) {
+        super.setupFileContextMenu(editor, menu, contextFile, contextProject);
         for (Component c : menu.getComponents())
             if (c instanceof ItemDelete)
                 menu.remove(c);

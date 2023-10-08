@@ -1,4 +1,4 @@
-package me.tapeline.hummingbird.ide.frames.editor.tooltabs;
+package me.tapeline.hummingbird.ide.tooltabs.project;
 
 import me.tapeline.carousellib.elements.actionbar.CActionBar;
 import me.tapeline.carousellib.elements.actionbar.CButtonAction;

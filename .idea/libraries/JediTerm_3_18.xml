@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JediTerm-3.18">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/JediTerm-3.18.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

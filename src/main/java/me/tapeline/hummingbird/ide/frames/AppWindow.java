@@ -24,4 +24,9 @@ public abstract class AppWindow extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    public void dispose() {
+        super.dispose();
+        Application.instance.saveConfig();
+    }
+
 }

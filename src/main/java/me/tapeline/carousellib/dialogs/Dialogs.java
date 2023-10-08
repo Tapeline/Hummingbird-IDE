@@ -7,8 +7,11 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Dialogs {
+
+    public static Logger logger;
 
     public static File directory(Component form, File parent) {
         JFileChooser fileChooser = new JFileChooser(parent);
@@ -101,6 +104,8 @@ public class Dialogs {
     }
 
     public static void error(Component form, String title, String text) {
+        if (logger != null)
+            logger.severe(title + "\n" + text);
         JOptionPane.showMessageDialog(
                 form,
                 text,
@@ -110,6 +115,8 @@ public class Dialogs {
     }
 
     public static void warn(Component form, String title, String text) {
+        if (logger != null)
+            logger.warning(title + "\n" + text);
         JOptionPane.showMessageDialog(
                 form,
                 text,
@@ -119,6 +126,8 @@ public class Dialogs {
     }
 
     public static void info(Component form, String title, String text) {
+        if (logger != null)
+            logger.info(title + "\n" + text);
         JOptionPane.showMessageDialog(
                 form,
                 text,

@@ -1,8 +1,11 @@
 package me.tapeline.hummingbird.ide;
 
 import me.tapeline.hummingbird.ide.expansion.RegistryEntry;
+import me.tapeline.hummingbird.ide.expansion.files.AbstractContextMenuExpansion;
 import me.tapeline.hummingbird.ide.expansion.files.AbstractFileType;
+import me.tapeline.hummingbird.ide.expansion.project.AbstractProjectGenerator;
 import me.tapeline.hummingbird.ide.expansion.runconfigs.AbstractConfigurationRunner;
+import me.tapeline.hummingbird.ide.expansion.syntax.AbstractSyntaxAdapterType;
 import me.tapeline.hummingbird.ide.expansion.themes.AbstractTheme;
 
 import java.util.ArrayList;
@@ -12,7 +15,19 @@ public class Registry {
 
     public static List<AbstractTheme> themes = new ArrayList<>();
     public static List<AbstractFileType> fileTypes = new ArrayList<>();
-    public static List<AbstractConfigurationRunner> configurationRunners = new ArrayList<>();
+    public static List<AbstractConfigurationRunner> configurationRunners
+            = new ArrayList<>();
+    public static List<AbstractProjectGenerator> projectGenerators = new ArrayList<>();
+    public static List<AbstractContextMenuExpansion> contextMenuExpansions
+            = new ArrayList<>();
+    public static List<AbstractSyntaxAdapterType> syntaxAdapterTypes = new ArrayList<>();
+
+    public static AbstractTheme currentTheme = null;
+
+    public static void registerAll(List<? extends RegistryEntry> objects) {
+        for (RegistryEntry object : objects)
+            register(object);
+    }
 
     public static void register(RegistryEntry object) {
         if (object instanceof AbstractFileType fileType)
@@ -21,6 +36,12 @@ public class Registry {
             themes.add(0, theme);
         else if (object instanceof AbstractConfigurationRunner runner)
             configurationRunners.add(0, runner);
+        else if (object instanceof AbstractProjectGenerator generator)
+            projectGenerators.add(generator);
+        else if (object instanceof AbstractContextMenuExpansion expansion)
+            contextMenuExpansions.add(expansion);
+        else if (object instanceof AbstractSyntaxAdapterType syntaxAdapterType)
+            syntaxAdapterTypes.add(syntaxAdapterType);
     }
 
     public static AbstractTheme getTheme(String id) {
@@ -42,6 +63,30 @@ public class Registry {
             if (runner.id().equals(id))
                 return runner;
         return null;
+    }
+
+    public static AbstractProjectGenerator getProjectGenerator(String id) {
+        for (AbstractProjectGenerator generator : projectGenerators)
+            if (generator.id().equals(id))
+                return generator;
+        return null;
+    }
+
+    public static AbstractContextMenuExpansion getMenuExpansion(String id) {
+        for (AbstractContextMenuExpansion expansion : contextMenuExpansions)
+            if (expansion.id().equals(id))
+                return expansion;
+        return null;
+    }
+
+    public static List<AbstractContextMenuExpansion> getApplicableExpansions(
+            AbstractFileType fileType) {
+        List<AbstractContextMenuExpansion> result = new ArrayList<>();
+        for (AbstractContextMenuExpansion expansion : contextMenuExpansions) {
+            if (expansion.getApplicableTypes().contains(fileType.getClass()))
+                result.add(expansion);
+        }
+        return result;
     }
 
 }
